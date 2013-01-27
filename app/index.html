@@ -1,13 +1,26 @@
 <!doctype html>
 <html lang="en" ng-app="myApp">
 <head>
-  <meta charset="utf-8">
-  <title>Instagram on the AngularJS</title>
+    <meta charset="utf-8">
+    <title>Instagram on the AngularJS</title>
+    <script src="lib/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.css"/>
 </head>
 <body>
-  <p id="hello">World!</p>
-  <script src="lib/angular/angular.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/services.js"></script>
+    <h1>Instagram Slideshow</h1>
+    <ul class="nav nav-pills">
+        <!-- https://api.instagram.com/v1/media/popular?client_id={CLIENT_ID} -->
+        <li class="active"><a href="#bestof">Best Of</a></li>
+        <li><a href="#local">Near you</a></li>
+    </ul>
+
+    <div ng-view>
+    </div>
+
+    <script src="lib/angular/angular.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
 </body>
 </html>
