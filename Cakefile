@@ -9,3 +9,6 @@ task 'test', 'run all tests suites', ->
   exec "#{phantom_bin} #{testacular} start #{__dirname}/config/testacular.conf.js #{options}", (err, stdout, stderr) ->
     console.error err if err
     console.log stdout
+  exec "#{phantom_bin} #{testacular} start #{__dirname}/config/testacular-e2e.conf.js #{options}", (err, stdout, stderr) ->
+    console.error err if err
+    console.log stdout
