@@ -6,6 +6,7 @@ var module = angular.module('myApp', ['myApp.services']).
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
         $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: RequestUserLocationCtrl});
         $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: LocalInstagramCtrl});
+        $routeProvider.when('/about');
         $routeProvider.otherwise({redirectTo: '/bestof'});
     }]);
 
@@ -31,6 +32,14 @@ module.controller('MainCtrl', ['$scope', function($scope, SearchState){
         //    return '';
         //}
     };
+
+    $scope.showAbout = function(){
+        $('#aboutWindow').modal('show')
+    }
+
+    $scope.hideAbout = function(){
+        $('#aboutWindow').modal('hide')
+    }
 }]);
 
 function isActivate(path){

@@ -44,8 +44,6 @@ function RequestUserLocationCtrl($location, $window, SearchState){
     SearchState.setState('local');
     var options = {timeout:60000};
     navigator.geolocation.getCurrentPosition(function(position){
-        console.log('$location.url()', $location.url());
-        console.log('$location.path()', $location.path());
         var lat = position.coords.latitude.toFixed(2);
         var lng = position.coords.longitude.toFixed(2);
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
