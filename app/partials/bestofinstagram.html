@@ -1,0 +1,5 @@
+<div class="instagram-images-list">
+    <div ng-repeat="image in instagramResult.data" class="instagram-image">
+        <img ng-src="{{image.images.standard_resolution.url}}" alt="{{image.caption.text}}">
+    </div>
+</div>

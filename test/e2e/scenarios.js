@@ -9,8 +9,17 @@ describe('my app', function() {
         expect(browser().location().url()).toBe("/bestof");
     });
 
-  it('test 1', function() {
+    describe('bestof', function() {
 
-      //expect(element('#hello').text()).toEqual('World!');
-  });
+        beforeEach(function() {
+            browser().navigateTo('#/bestof');
+        });
+
+
+        it('should render view1 when user navigates to /view1', function() {
+            expect(element('[ng-view] p:first').text()).
+                toMatch(/partial for view 1/);
+        });
+
+    });
 });
