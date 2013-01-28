@@ -39,30 +39,41 @@ function getEarlyImage(collection){
     return earlyImage;
 }
 
-function LocalInstagramCtrl($scope, LocalImages, instagramClintId, SearchState){
+function RequestUserLocationCtrl($location, $window, SearchState){
+    console.log('RequestUserLocationCtrl');
     SearchState.setState('local');
     var options = {timeout:60000};
     navigator.geolocation.getCurrentPosition(function(position){
-        console.log('getCurrentPosition', position);
-        var lat = position.coords.latitude;
-        var lng = position.coords.longitude;
-        $scope.instagramResult = LocalImages.query({
-            clientId: instagramClintId,
-            lat:lat, lng:lng,
-            max_timestamp: Math.round(Date.now() / 1000)
-        });
-
-        $scope.requestMore = function(){
-            var earlyImage = getEarlyImage($scope.instagramResult.data);
-            LocalImages.query({
-                clientId: instagramClintId,
-                lat:lat, lng:lng,
-                max_timestamp:earlyImage.created_time - 1
-            }, function(result){
-                mergeImageCollections($scope.instagramResult.data, result.data);
-            });
-        }
+        console.log('$location.url()', $location.url());
+        console.log('$location.path()', $location.path());
+        var lat = position.coords.latitude.toFixed(2);
+        var lng = position.coords.longitude.toFixed(2);
+        $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
         console.log('no location');
     }, options);
+}
+
+function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId, SearchState){
+    console.log('LocalInstagramCtrl');
+    SearchState.setState('local');
+
+    var lat = $routeParams.lat;
+    var lng = $routeParams.lng;
+    $scope.instagramResult = LocalImages.query({
+        clientId: instagramClintId,
+        lat:lat, lng:lng,
+        max_timestamp: Math.round(Date.now() / 1000)
+    });
+
+    $scope.requestMore = function(){
+        var earlyImage = getEarlyImage($scope.instagramResult.data);
+        LocalImages.query({
+            clientId: instagramClintId,
+            lat:lat, lng:lng,
+            max_timestamp:earlyImage.created_time
+        }, function(result){
+            mergeImageCollections($scope.instagramResult.data, result.data);
+        });
+    }
 }

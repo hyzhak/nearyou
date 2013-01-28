@@ -4,7 +4,8 @@
 var module = angular.module('myApp', ['myApp.services']).
     config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
-        $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: LocalInstagramCtrl});
+        $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: RequestUserLocationCtrl});
+        $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: LocalInstagramCtrl});
         $routeProvider.otherwise({redirectTo: '/bestof'});
     }]);
 
