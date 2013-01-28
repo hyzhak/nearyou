@@ -9,14 +9,14 @@
 <body ng-controller="MainCtrl">
     <h1>Instagram Slideshow</h1>
     <ul class="nav nav-pills">
-        <li class="active"><a href="#bestof">Best Of</a></li>
-        <li><a href="#local">Near you</a></li>
+        <li ng-class="isActivate('bestof')"><a href="#bestof">Best Of</a></li>
+        <li ng-class="isActivate('local')"><a href="#local">Near you</a></li>
     </ul>
 
     <div ng-view>
     </div>
 
-    <p><a target="_blank" href="http://hyzhak.github.com/">(C) Hyzhak & Burenka <span ng-model="year"></span></a></p>
+    <p><a target="_blank" href="http://hyzhak.github.com/">(C) Hyzhak & Burenka <span ng-bind="year"></span></a></p>
 
     <script src="lib/angular/angular.js"></script>
     <script src="lib/angular/angular-resource.js"></script>

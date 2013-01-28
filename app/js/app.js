@@ -4,10 +4,35 @@
 var module = angular.module('myApp', ['myApp.services']).
     config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
-        $routeProvider.when('/local', {templateUrl: 'partials/localinstagram.html', controller: LocalInstagramCtrl});
+        $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: LocalInstagramCtrl});
         $routeProvider.otherwise({redirectTo: '/bestof'});
     }]);
 
-module.controller('MainCtrl', ['$scope', function($scope){
+module.service('SearchState', function(){
+    var state = ""
+    return {
+        getState : function(){
+            return state;
+        },
+        setState: function(value){
+            console.log('set State of SearchState');
+            state = value;
+        }
+    }
+})
+
+module.controller('MainCtrl', ['$scope', function($scope, SearchState){
     $scope.year = 2013;
+    $scope.isActivate = function(state){
+        //if(SearchState.getState() == state){
+            return 'active';
+        //}else{
+        //    return '';
+        //}
+    };
 }]);
+
+function isActivate(path){
+    console.log('isActivate', path);
+    return 'active';
+}
