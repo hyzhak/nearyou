@@ -8,7 +8,7 @@ angular.module('myApp.services', ['ngResource']).
     value('instagramClintId', '39a6f9437c464ef684d543880969764d').
 
     factory('BestOfImages', function($resource){
-        return $resource('https://api.instagram.com/v1/media/popular?client_id=:clientId&redirect_uri=http://localhost:8080/&callback=JSON_CALLBACK', {}, {
+        return $resource('https://api.instagram.com/v1/media/popular?client_id=:clientId&callback=JSON_CALLBACK', {}, {
             query: {method:'JSONP'}
         });
     });
