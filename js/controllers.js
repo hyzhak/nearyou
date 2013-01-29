@@ -40,7 +40,6 @@ function getEarlyImage(collection){
 }
 
 function RequestUserLocationCtrl($location, $window, SearchState){
-    console.log('RequestUserLocationCtrl');
     SearchState.setState('local');
     var options = {timeout:60000};
     navigator.geolocation.getCurrentPosition(function(position){
@@ -48,12 +47,11 @@ function RequestUserLocationCtrl($location, $window, SearchState){
         var lng = position.coords.longitude.toFixed(2);
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
-        console.log('no location');
+        console.log('TODO : just gues!');
     }, options);
 }
 
 function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId, SearchState){
-    console.log('LocalInstagramCtrl');
     SearchState.setState('local');
 
     var lat = $routeParams.lat;
