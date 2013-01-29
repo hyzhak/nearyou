@@ -1,10 +1,26 @@
-function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState){
+function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState, $window){
     SearchState.setState('bestOf');
     $scope.instagramResult = BestOfImages.query({clientId: instagramClintId});
+    $scope.hasRequested = false;
     $scope.requestMore = function(){
+        $scope.hasRequested = true;
         BestOfImages.query({clientId: instagramClintId}, function(result){
             mergeImageCollections($scope.instagramResult.data, result.data);
+            $scope.hasRequested = false;
         });
+    }
+    $window.onscroll = catchLastPartOfTheImages($scope, $window);
+}
+
+function catchLastPartOfTheImages($scope, $window){
+    return function(){
+        var nVScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        console.log('nVScroll', nVScroll, (3 * (document.height - $window.innerHeight ) / 4));
+        if(nVScroll > 3 * (document.height - $window.innerHeight ) / 4){
+            if(!$scope.hasRequested){
+                $scope.requestMore();
+            }
+        }
     }
 }
 
@@ -47,11 +63,11 @@ function RequestUserLocationCtrl($location, $window, SearchState){
         var lng = position.coords.longitude.toFixed(2);
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
-        console.log('TODO : just gues!');
+        console.log('TODO : just guess!');
     }, options);
 }
 
-function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId, SearchState){
+function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId, SearchState, $window){
     SearchState.setState('local');
 
     var lat = $routeParams.lat;
@@ -62,14 +78,19 @@ function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId,
         max_timestamp: Math.round(Date.now() / 1000)
     });
 
+    $scope.hasRequested = false;
     $scope.requestMore = function(){
+        $scope.hasRequested = true;
         var earlyImage = getEarlyImage($scope.instagramResult.data);
         LocalImages.query({
             clientId: instagramClintId,
             lat:lat, lng:lng,
             max_timestamp:earlyImage.created_time
         }, function(result){
+            $scope.hasRequested = false;
             mergeImageCollections($scope.instagramResult.data, result.data);
         });
     }
+
+    $window.onscroll = catchLastPartOfTheImages($scope, $window);
 }
