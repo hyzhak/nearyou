@@ -33,12 +33,20 @@ module.controller('MainCtrl', ['$scope', function($scope, SearchState){
         //}
     };
 
+    $scope.lockScroll = false;
+
+    $scope.isTrue = function(condition, trueExpression, falseExpression){
+        return condition?trueExpression:falseExpression;
+    }
+
     $scope.showAbout = function(){
         $('#aboutWindow').modal('show')
+        $scope.lockScroll = true;
     }
 
     $scope.hideAbout = function(){
         $('#aboutWindow').modal('hide')
+        $scope.lockScroll = false;
     }
 }]);
 

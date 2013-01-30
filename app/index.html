@@ -4,9 +4,10 @@
     <meta charset="utf-8">
     <title>Instagram on the AngularJS</title>
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="css/main.css"/>
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.css"/>
 </head>
-<body ng-controller="MainCtrl">
+<body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
     <h1>Instagram Slideshow</h1>
     <ul class="nav nav-pills">
         <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
