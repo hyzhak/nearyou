@@ -23,14 +23,14 @@ module.service('SearchState', function(){
     }
 })
 
-module.controller('MainCtrl', ['$scope', function($scope, SearchState){
+module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchState){
     $scope.year = 2013;
     $scope.isActivate = function(state){
-        //if(SearchState.getState() == state){
+        if(SearchState.getState() == state){
             return 'active';
-        //}else{
-        //    return '';
-        //}
+        }else{
+            return '';
+        }
     };
 
     $scope.lockScroll = false;

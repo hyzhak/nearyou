@@ -1,5 +1,5 @@
 function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState, $window){
-    SearchState.setState('bestOf');
+    SearchState.setState('bestof');
     $scope.instagramResult = BestOfImages.query({clientId: instagramClintId});
     $scope.hasRequested = false;
     $scope.requestMore = function(){
