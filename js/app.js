@@ -23,22 +23,30 @@ module.service('SearchState', function(){
     }
 })
 
-module.controller('MainCtrl', ['$scope', function($scope, SearchState){
+module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchState){
     $scope.year = 2013;
     $scope.isActivate = function(state){
-        //if(SearchState.getState() == state){
+        if(SearchState.getState() == state){
             return 'active';
-        //}else{
-        //    return '';
-        //}
+        }else{
+            return '';
+        }
     };
+
+    $scope.lockScroll = false;
+
+    $scope.isTrue = function(condition, trueExpression, falseExpression){
+        return condition?trueExpression:falseExpression;
+    }
 
     $scope.showAbout = function(){
         $('#aboutWindow').modal('show')
+        $scope.lockScroll = true;
     }
 
     $scope.hideAbout = function(){
         $('#aboutWindow').modal('hide')
+        $scope.lockScroll = false;
     }
 }]);
 
