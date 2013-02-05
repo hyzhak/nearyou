@@ -8,19 +8,23 @@
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.css"/>
 </head>
 <body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
-    <h1>Instagram Slideshow</h1>
-    <ul class="nav nav-pills">
-        <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
-        <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
-        <li ng-click="showAbout()"><a ng-click="showAbout()">About...</a></li>
-    </ul>
+    <header class="list-header">
+        <h1>Instagram Slideshow</h1>
+        <ul class="nav nav-pills">
+            <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
+            <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
+            <li ng-click="showAbout()"><a ng-click="showAbout()">About...</a></li>
+        </ul>
+    </header>
 
     <div ng-view>
     </div>
 
-    <footer class="inline">
-        <a target="_blank" href="http://hyzhak.github.com/"><span class="label label-info">(C) Hyzhak & Burenka <span ng-bind="year"></span> </span></a>
-        <a ng-click="showAbout()">About...</a>
+    <footer class="inline list-footer">
+        <div class="copy-right">
+            <a target="_blank" href="http://hyzhak.github.com/"><span class="label label-info">(C) Hyzhak & Burenka <span ng-bind="year"></span> </span></a>
+            <a ng-click="showAbout()">About...</a>
+        </div>
     </footer>
 
     <div id="aboutWindow" class="modal hide fade">
