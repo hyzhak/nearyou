@@ -6,7 +6,6 @@ var module = angular.module('myApp', ['myApp.services']).
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
         $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: RequestUserLocationCtrl});
         $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: LocalInstagramCtrl});
-        $routeProvider.when('/about');
         $routeProvider.otherwise({redirectTo: '/bestof'});
     }]);
 
@@ -35,22 +34,32 @@ module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchS
 
     $scope.lockScroll = false;
 
+    $scope.$watch('lockScroll', function(newValue, oldValue){
+        console.log('newValue', newValue);
+        console.log('oldValue', oldValue);
+    });
+
     $scope.isTrue = function(condition, trueExpression, falseExpression){
         return condition?trueExpression:falseExpression;
     }
 
     $scope.showAbout = function(){
-        $('#aboutWindow').modal('show')
-        $scope.lockScroll = true;
+        $('#aboutWindow').modal('show');
     }
 
     $scope.hideAbout = function(){
-        $('#aboutWindow').modal('hide')
-        $scope.lockScroll = false;
+        $('#aboutWindow').modal('hide');
     }
-}]);
 
-function isActivate(path){
-    console.log('isActivate', path);
-    return 'active';
-}
+    $('#aboutWindow').on('show', function (e) {
+        $scope.lockScroll = true;
+        //break
+        //$scope.$digest();
+    });
+
+    $('#aboutWindow').on('hidden', function (e) {
+        $scope.$apply(function(){
+            $scope.lockScroll = false;
+        });
+    });
+}]);

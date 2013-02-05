@@ -15,7 +15,6 @@ function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState
 function catchLastPartOfTheImages($scope, $window){
     return function(){
         var nVScroll = document.documentElement.scrollTop || document.body.scrollTop;
-        console.log('nVScroll', nVScroll, (3 * (document.height - $window.innerHeight ) / 4));
         if(nVScroll > 3 * (document.height - $window.innerHeight ) / 4){
             if(!$scope.hasRequested){
                 $scope.requestMore();
