@@ -1,4 +1,6 @@
 function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState, $window){
+    trackPage('bestof');
+
     SearchState.setState('bestof');
     $scope.instagramResult = BestOfImages.query({clientId: instagramClintId});
     $scope.hasRequested = false;
@@ -12,11 +14,17 @@ function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
 }
 
+function trackPage(action, label, value) {
+    _gaq.push(['_trackEvent', 'page', action, label, value]);
+    console.log('_trackEvent', 'page', action, label, value);
+}
+
 function catchLastPartOfTheImages($scope, $window){
     return function(){
         var nVScroll = document.documentElement.scrollTop || document.body.scrollTop;
         if(nVScroll > 3 * (document.height - $window.innerHeight ) / 4){
             if(!$scope.hasRequested){
+                trackPage('scroll-to-edge');
                 $scope.requestMore();
             }
         }
@@ -55,14 +63,20 @@ function getEarlyImage(collection){
 }
 
 function RequestUserLocationCtrl($location, $window, SearchState){
+    trackPage('request-location');
     SearchState.setState('local');
     var options = {timeout:60000};
     navigator.geolocation.getCurrentPosition(function(position){
+        trackPage('user-apply-getlocation');
         var lat = position.coords.latitude.toFixed(2);
         var lng = position.coords.longitude.toFixed(2);
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
-        console.log('TODO : just guess!');
+        trackPage('user-reject-getlocation');
+        console.log('TODO : just guess! Maybe NY?');
+        var lat = 40.01;
+        var lng = -73.01;
+        $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, options);
 }
 
@@ -71,6 +85,7 @@ function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId,
 
     var lat = $routeParams.lat;
     var lng = $routeParams.lng;
+    trackPage('local, [' + lat + ', ' + lng + ']');
     $scope.instagramResult = LocalImages.query({
         clientId: instagramClintId,
         lat:lat, lng:lng,

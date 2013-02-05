@@ -34,10 +34,12 @@ module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchS
 
     $scope.lockScroll = false;
 
+    /*
     $scope.$watch('lockScroll', function(newValue, oldValue){
         console.log('newValue', newValue);
         console.log('oldValue', oldValue);
     });
+    */
 
     $scope.isTrue = function(condition, trueExpression, falseExpression){
         return condition?trueExpression:falseExpression;
@@ -45,19 +47,23 @@ module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchS
 
     $scope.showAbout = function(){
         $('#aboutWindow').modal('show');
+        trackPage('show-about');
     }
 
     $scope.hideAbout = function(){
         $('#aboutWindow').modal('hide');
+        trackPage('hide-about');
     }
 
     $('#aboutWindow').on('show', function (e) {
         $scope.lockScroll = true;
+        trackPage('on-show-about');
         //break
         //$scope.$digest();
     });
 
     $('#aboutWindow').on('hidden', function (e) {
+        trackPage('on-hidden-about');
         $scope.$apply(function(){
             $scope.lockScroll = false;
         });

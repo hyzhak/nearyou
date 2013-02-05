@@ -13,11 +13,11 @@
         <ul class="nav nav-pills">
             <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
             <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
-            <li ng-click="showAbout()"><a ng-click="showAbout()">About...</a></li>
+            <li ><a ng-click="showAbout()">About...</a></li>
         </ul>
     </header>
 
-    <div ng-view>
+    <div ng-view class="list-content">
     </div>
 
     <footer class="inline list-footer">
