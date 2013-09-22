@@ -2,6 +2,8 @@
 
 // Declare app level module which depends on filters, and services
 var module = angular.module('myApp', ['myApp.services', 'ngRoute']).
+    //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
+    value('instagramClintId', '39a6f9437c464ef684d543880969764d').
     config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
         $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: RequestUserLocationCtrl});
