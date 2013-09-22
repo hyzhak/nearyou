@@ -1,0 +1,23 @@
+{
+  "name": "instagram-nearyou",
+  "version": "0.2.0",
+  "homepage": "http://hyzhak.github.io/nearyou",
+  "authors": [
+    "Eugene Krevenets <hyzhak@ya.ru>"
+  ],
+  "description": "local instagram photos, that near you. Or other great places",
+  "main": "app/index.html",
+  "keywords": [
+    "instagram",
+    "photos",
+    "angularjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
