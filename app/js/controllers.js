@@ -73,9 +73,9 @@ function RequestUserLocationCtrl($location, $window, SearchState){
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
         trackPage('user-reject-getlocation');
-        console.log('TODO : just guess! Maybe NY?');
-        var lat = 40.01;
-        var lng = -73.01;
+        console.log('TODO : just guess! Maybe NY? Central Park!');
+        var lat = 40.776071;
+        var lng = -73.966717;
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, options);
 }
