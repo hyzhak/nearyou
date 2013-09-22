@@ -10,13 +10,12 @@ function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState
             mergeImageCollections($scope.instagramResult.data, result.data);
             $scope.hasRequested = false;
         });
-    }
+    };
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
 }
 
 function trackPage(action, label, value) {
-    _gaq.push(['_trackEvent', 'page', action, label, value]);
-    console.log('_trackEvent', 'page', action, label, value);
+    googleAnalytics('send', 'event', action, label, value);
 }
 
 function catchLastPartOfTheImages($scope, $window){
