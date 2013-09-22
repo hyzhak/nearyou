@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-var module = angular.module('myApp', ['myApp.services']).
+var module = angular.module('myApp', ['myApp.services', 'ngRoute']).
     config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: BestOfInstagramCtrl});
         $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: RequestUserLocationCtrl});
@@ -10,7 +10,7 @@ var module = angular.module('myApp', ['myApp.services']).
     }]);
 
 module.service('SearchState', function(){
-    var state = ""
+    var state = "";
     return {
         getState : function(){
             return state;
@@ -20,7 +20,7 @@ module.service('SearchState', function(){
             state = value;
         }
     }
-})
+});
 
 module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchState){
     $scope.year = 2013;
@@ -43,17 +43,17 @@ module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchS
 
     $scope.isTrue = function(condition, trueExpression, falseExpression){
         return condition?trueExpression:falseExpression;
-    }
+    };
 
     $scope.showAbout = function(){
         $('#aboutWindow').modal('show');
         trackPage('show-about');
-    }
+    };
 
     $scope.hideAbout = function(){
         $('#aboutWindow').modal('hide');
         trackPage('hide-about');
-    }
+    };
 
     $('#aboutWindow').on('show', function (e) {
         $scope.lockScroll = true;

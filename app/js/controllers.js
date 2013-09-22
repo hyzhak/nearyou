@@ -103,7 +103,7 @@ function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId,
             $scope.hasRequested = false;
             mergeImageCollections($scope.instagramResult.data, result.data);
         });
-    }
+    };
 
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
 }
