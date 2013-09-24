@@ -9,9 +9,8 @@
 </head>
 <body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
     <header class="list-header">
-        <h1>Instagram Slideshow</h1>
         <ul class="nav nav-pills">
-            <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
+            <li class="title">Photos</li>
             <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
             <li ><a ng-click="showAbout()">About...</a></li>
         </ul>
