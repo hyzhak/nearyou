@@ -14,7 +14,7 @@
     font-size: 22px; }
 
 .list-content {
-  padding-top: 64px; }
+  padding-top: 44px; }
 
 .list-footer {
   position: fixed;
@@ -27,3 +27,8 @@
 
 .copy-right {
   color: black; }
+
+.instagram-image {
+  margin: 0 auto;
+  width: 612px;
+  height: 612px; }
