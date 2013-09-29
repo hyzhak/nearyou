@@ -1,4 +1,6 @@
-function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState, $window){
+angular.module('myApp').controller('BestOfInstagramCtrl', [
+    'BestOfImages', 'instagramClintId', 'SearchState', '$scope', '$window',
+function(BestOfImages, instagramClintId, SearchState, $scope, $window) {
     trackPage('bestof');
 
     SearchState.setState('bestof');
@@ -12,7 +14,7 @@ function BestOfInstagramCtrl($scope, BestOfImages, instagramClintId, SearchState
         });
     };
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
-}
+}]);
 
 function trackPage(action, label, value) {
     googleAnalytics('send', 'event', action, label, value);
@@ -61,7 +63,7 @@ function getEarlyImage(collection){
     return earlyImage;
 }
 
-function RequestUserLocationCtrl($location, $window, SearchState){
+angular.module('myApp').controller('RequestUserLocationCtrl', ['SearchState', '$window', function(SearchState, $window) {
     trackPage('request-location');
     SearchState.setState('local');
     var options = {timeout:60000};
@@ -77,9 +79,16 @@ function RequestUserLocationCtrl($location, $window, SearchState){
         var lng = -73.966717;
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, options);
-}
+}]);
 
-function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId, SearchState, $window){
+angular.module('myApp').controller('LocalInstagramCtrl', [
+    'LocalImages',
+    'instagramClintId',
+    'SearchState',
+    '$routeParams',
+    '$scope',
+    '$window',
+function(LocalImages, instagramClintId, SearchState, $routeParams, $scope, $window) {
     SearchState.setState('local');
 
     var lat = $routeParams.lat;
@@ -106,4 +115,4 @@ function LocalInstagramCtrl($scope, $routeParams, LocalImages, instagramClintId,
     };
 
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
-}
+}]);
