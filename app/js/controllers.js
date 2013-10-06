@@ -1,7 +1,17 @@
 angular.module('myApp').controller('BestOfInstagramCtrl', [
-    'BestOfImages', 'instagramClintId', 'SearchState', '$scope', '$window',
-function(BestOfImages, instagramClintId, SearchState, $scope, $window) {
-    trackPage('bestof');
+    'GoogleAnalytics',
+    'BestOfImages',
+    'instagramClintId',
+    'SearchState',
+    '$scope',
+    '$window',
+function(GoogleAnalytics,
+         BestOfImages,
+         instagramClintId,
+         SearchState,
+         $scope,
+         $window) {
+    GoogleAnalytics.trackPage('bestof');
 
     SearchState.setState('bestof');
     $scope.instagramResult = BestOfImages.query({clientId: instagramClintId});
@@ -16,16 +26,11 @@ function(BestOfImages, instagramClintId, SearchState, $scope, $window) {
     $window.onscroll = catchLastPartOfTheImages($scope, $window);
 }]);
 
-function trackPage(action, label, value) {
-    googleAnalytics('send', 'event', action, label, value);
-}
-
 function catchLastPartOfTheImages($scope, $window){
     return function(){
         var nVScroll = document.documentElement.scrollTop || document.body.scrollTop;
         if(nVScroll > 3 * (document.height - $window.innerHeight ) / 4){
             if(!$scope.hasRequested){
-                trackPage('scroll-to-edge');
                 $scope.requestMore();
             }
         }
@@ -63,17 +68,22 @@ function getEarlyImage(collection){
     return earlyImage;
 }
 
-angular.module('myApp').controller('RequestUserLocationCtrl', ['SearchState', '$window', function(SearchState, $window) {
-    trackPage('request-location');
+angular.module('myApp').controller('RequestUserLocationCtrl',
+    [
+        'GoogleAnalytics',
+        'SearchState',
+        '$window',
+function(GoogleAnalytics, SearchState, $window) {
+    GoogleAnalytics.trackPage('request-location');
     SearchState.setState('local');
     var options = {timeout:60000};
     navigator.geolocation.getCurrentPosition(function(position){
-        trackPage('user-apply-getlocation');
+        GoogleAnalytics.trackPage('user-apply-getlocation');
         var lat = position.coords.latitude.toFixed(2);
         var lng = position.coords.longitude.toFixed(2);
         $window.location.href = $window.location.href + '/' + lat + '/' + lng;
     }, function(){
-        trackPage('user-reject-getlocation');
+        GoogleAnalytics.trackPage('user-reject-getlocation');
         console.log('TODO : just guess! Maybe NY? Central Park!');
         var lat = 40.776071;
         var lng = -73.966717;
@@ -82,18 +92,19 @@ angular.module('myApp').controller('RequestUserLocationCtrl', ['SearchState', '$
 }]);
 
 angular.module('myApp').controller('LocalInstagramCtrl', [
+    'GoogleAnalytics',
     'LocalImages',
     'instagramClintId',
     'SearchState',
     '$routeParams',
     '$scope',
     '$window',
-function(LocalImages, instagramClintId, SearchState, $routeParams, $scope, $window) {
+function(GoogleAnalytics, LocalImages, instagramClintId, SearchState, $routeParams, $scope, $window) {
     SearchState.setState('local');
 
     var lat = $routeParams.lat;
     var lng = $routeParams.lng;
-    trackPage('local, [' + lat + ', ' + lng + ']');
+    GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + ']');
     $scope.instagramResult = LocalImages.query({
         clientId: instagramClintId,
         lat:lat, lng:lng,
@@ -102,6 +113,7 @@ function(LocalImages, instagramClintId, SearchState, $routeParams, $scope, $wind
 
     $scope.hasRequested = false;
     $scope.requestMore = function(){
+        GoogleAnalytics.trackPage('request-more');
         $scope.hasRequested = true;
         var earlyImage = getEarlyImage($scope.instagramResult.data);
         LocalImages.query({

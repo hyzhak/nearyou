@@ -24,7 +24,11 @@ module.service('SearchState', function(){
     }
 });
 
-module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchState){
+module.controller('MainCtrl', [
+    'GoogleAnalytics',
+    '$scope',
+    'SearchState',
+function(GoogleAnalytics, $scope, SearchState){
     $scope.year = 2013;
     $scope.isActivate = function(state){
         if(SearchState.getState() == state){
@@ -49,23 +53,23 @@ module.controller('MainCtrl', ['$scope', 'SearchState', function($scope, SearchS
 
     $scope.showAbout = function(){
         $('#aboutWindow').modal('show');
-        trackPage('show-about');
+        GoogleAnalytics.trackPage('show-about');
     };
 
     $scope.hideAbout = function(){
         $('#aboutWindow').modal('hide');
-        trackPage('hide-about');
+        GoogleAnalytics.trackPage('hide-about');
     };
 
     $('#aboutWindow').on('show', function (e) {
         $scope.lockScroll = true;
-        trackPage('on-show-about');
+        GoogleAnalytics.trackPage('on-show-about');
         //break
         //$scope.$digest();
     });
 
     $('#aboutWindow').on('hidden', function (e) {
-        trackPage('on-hidden-about');
+        GoogleAnalytics.trackPage('on-hidden-about');
         $scope.$apply(function(){
             $scope.lockScroll = false;
         });
