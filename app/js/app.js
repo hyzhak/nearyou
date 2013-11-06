@@ -1,77 +1,43 @@
-'use strict';
+define([
+    'angular',
+    'angular-resource',
+    'angular-route',
+    'angular-ui-router',
+    'app/controllers',
+    'app/directives',
+    'app/factories',
+    'app/services',
+], function(angular, resource, route, router, controllers, directives, factories, services) {
 
-// Declare app level module which depends on filters, and services
-var module = angular.module('myApp', ['myApp.services', 'ngRoute']).
+    // Declare app level module which depends on filters, and services
+    var app = angular.module('myApp', ['ngRoute', 'ngResource']).
+        config(['$routeProvider', function($routeProvider) {
+            'use strict';
+            $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
+            $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: 'RequestUserLocationCtrl'});
+            $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: 'LocalImagesCtrl'});
+            $routeProvider.otherwise({redirectTo: '/local'});
+        }]);
+
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
-    value('instagramClintId', '39a6f9437c464ef684d543880969764d').
-    config(['$routeProvider', function($routeProvider) {
-        $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
-        $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: 'RequestUserLocationCtrl'});
-        $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: 'LocalInstagramCtrl'});
-        $routeProvider.otherwise({redirectTo: '/local'});
-    }]);
+    app.constant('instagramClintId', '39a6f9437c464ef684d543880969764d');
 
-module.service('SearchState', function(){
-    var state = "";
-    return {
-        getState : function(){
-            return state;
-        },
-        setState: function(value){
-            console.log('set State of SearchState');
-            state = value;
+    app.controller(controllers);
+    app.directive(directives);
+    app.factory(factories);
+    app.service(services);
+
+    app.service('SearchState', function(){
+        'use strict';
+        var state = "";
+        return {
+            getState : function(){
+                return state;
+            },
+            setState: function(value){
+                console.log('set State of SearchState');
+                state = value;
+            }
         }
-    }
+    });
 });
-
-module.controller('MainCtrl', [
-    'GoogleAnalytics',
-    '$scope',
-    'SearchState',
-function(GoogleAnalytics, $scope, SearchState){
-    $scope.year = 2013;
-    $scope.isActivate = function(state){
-        if(SearchState.getState() == state){
-            return 'active';
-        }else{
-            return '';
-        }
-    };
-
-    $scope.lockScroll = false;
-
-    /*
-    $scope.$watch('lockScroll', function(newValue, oldValue){
-        console.log('newValue', newValue);
-        console.log('oldValue', oldValue);
-    });
-    */
-
-    $scope.isTrue = function(condition, trueExpression, falseExpression){
-        return condition?trueExpression:falseExpression;
-    };
-
-    $scope.showAbout = function(){
-        $('#aboutWindow').modal('show');
-        GoogleAnalytics.trackPage('show-about');
-    };
-
-    $scope.hideAbout = function(){
-        $('#aboutWindow').modal('hide');
-        GoogleAnalytics.trackPage('hide-about');
-    };
-
-    $('#aboutWindow').on('show', function (e) {
-        $scope.lockScroll = true;
-        GoogleAnalytics.trackPage('on-show-about');
-        //break
-        //$scope.$digest();
-    });
-
-    $('#aboutWindow').on('hidden', function (e) {
-        GoogleAnalytics.trackPage('on-hidden-about');
-        $scope.$apply(function(){
-            $scope.lockScroll = false;
-        });
-    });
-}]);
