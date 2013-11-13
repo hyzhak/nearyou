@@ -7,15 +7,16 @@ define([
     'app/directives',
     'app/factories',
     'app/services',
-], function(angular, resource, route, router, controllers, directives, factories, services) {
+    'text!partials/bestofinstagram.html'
+], function(angular, resource, route, router, controllers, directives, factories, services, partialsBestOfInstagram) {
 
     // Declare app level module which depends on filters, and services
     var app = angular.module('myApp', ['ngRoute', 'ngResource']).
         config(['$routeProvider', function($routeProvider) {
             'use strict';
-            $routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
-            $routeProvider.when('/local', {templateUrl: 'partials/bestofinstagram.html', controller: 'RequestUserLocationCtrl'});
-            $routeProvider.when('/local/:lat/:lng', {templateUrl: 'partials/bestofinstagram.html', controller: 'LocalImagesCtrl'});
+            //$routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
+            $routeProvider.when('/local/:lat/:lng', {template: partialsBestOfInstagram, controller: 'LocalImagesCtrl'});
+            $routeProvider.when('/local', {template: partialsBestOfInstagram, controller: 'RequestUserLocationCtrl'});
             $routeProvider.otherwise({redirectTo: '/local'});
         }]);
 

@@ -1,6 +1,6 @@
 define([
-    'app/local/localImagesController',
-    'app/local/requestUserLocationController',
+    'app/near/localImagesController',
+    'app/near/requestUserLocationController',
     'app/main/mainController'
 ], function(LocalImagesCtrl, RequestUserLocationCtrl, MainCtrl) {
     'use strict';

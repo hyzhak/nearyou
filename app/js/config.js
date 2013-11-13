@@ -1,5 +1,4 @@
-requirejs.config({
-    baseUrl: '',
+requirejs({
     paths: {
         'app': 'js',
 
@@ -9,15 +8,15 @@ requirejs.config({
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-route': 'lib/angular-route/angular-route',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
-        'jquery': [
-            'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min',
-            'lib/jquery/jquery'
-        ],
+        'jquery': 'lib/jquery/jquery',
+        /*'jquery': [
+         'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min',
+         'lib/jquery/jquery'
+         ],*/
         'bootstrap': 'lib/bootstrap/dist/js/bootstrap'
     },
     shim: {
         'angular': {
-            deps: ['text'],
             exports: 'angular'
         },
         'angular-hammer': {
@@ -39,11 +38,6 @@ requirejs.config({
         'bootstrap': {
             deps: ['jquery']
         }
-    }
-});
-
-requirejs(['angular', 'app/app'], function (angular) {
-    'use strict';
-
-    angular.bootstrap(document, ['myApp']);
+    },
+    name: 'js/main'
 });

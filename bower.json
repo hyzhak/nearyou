@@ -27,6 +27,7 @@
     "angular-resource": "1.2.0-rc.3",
     "angular-route": "~1.2.0-rc.3",
     "requirejs": "~2.1.8",
-    "requirejs-text": "~2.0.10"
+    "requirejs-text": "~2.0.10",
+    "require-css": "~0.0.8"
   }
 }

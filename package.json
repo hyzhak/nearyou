@@ -1,7 +1,8 @@
 {
-  "name": "instangular.js",
-  "description": "Instagram on the AngularJS.",
-  "version": "0.0.1",
+  "name": "images-nearyou",
+  "shortName": "nearyou",
+  "description": "Images near you.",
+  "version": "0.2.0",
   "homepage": "https://github.com/Hyzhak/instagular-js",
   "author": "Eugene Krevenets",
   "licenses": [
@@ -12,20 +13,26 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/Hyzhak/instagular-js.git"
+    "url": "git://github.com/hyzhak/nearyou.git"
   },
   "engines": {
     "node": ">=0.6.0"
   },
   "keywords": [
-    "instagram", "AngularJS"
+    "instagram",
+    "AngularJS",
+    "photos"
   ],
   "dependencies": {
     "coffee-script": "1.4.x"
   },
   "devDependencies": {
     "testacular": "0.4.x",
-    "phantomjs": "0.2.x" 
+    "phantomjs": "0.2.x",
+    "grunt": "~0.4.1",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-preprocess": "~3.0.1"
   },
   "scripts": {
     "test": "./node_modules/coffee-script/bin/cake test"

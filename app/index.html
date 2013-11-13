@@ -40,8 +40,11 @@
             <a target="_blank" href="http://hyzhak.github.com/" class="btn btn-primary">Main Page</a>
         </div>
     </div>
-
-
+    <!-- @ifdef DEBUG=true -->
     <script data-main="js/main.js" src="lib/requirejs/require.js"></script>
+    <!-- @endif -->
+    <!-- @ifndef DEBUG=false -->
+    <script src="js/nearyou.js"></script>
+    <!-- @endif -->
 </body>
 </html>
