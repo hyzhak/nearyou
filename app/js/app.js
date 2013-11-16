@@ -25,25 +25,19 @@ define([
 
         $locationProvider.html5Mode(false).hashPrefix('!');
 
-        $urlRouterProvider.otherwise('local');
+        $urlRouterProvider.otherwise('at');
 
         $stateProvider
-            .state('local', {
-                url: '/local',
+            .state('at', {
+                url: '/at',
                 controller: 'RequestUserLocationCtrl',
                 template: partialsBestOfInstagram
             })
-            .state('at', {
+            .state('at-with-location', {
                 url: '/at/:lat/:lng',
                 controller: 'LocalImagesCtrl',
                 template: partialsBestOfInstagram
             });
-
-
-        //$routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
-//        $routeProvider.when('/local/:lat/:lng', {template: partialsBestOfInstagram, controller: 'LocalImagesCtrl'});
-//        $routeProvider.when('/local', {template: partialsBestOfInstagram, controller: 'RequestUserLocationCtrl'});
-//        $routeProvider.otherwise({redirectTo: '/local'});
     }]);
 
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
