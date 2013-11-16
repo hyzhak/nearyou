@@ -29,5 +29,10 @@
     "requirejs": "*",
     "requirejs-text": "*",
     "require-css": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.1",
+    "jasmine-sinon": "~0.2.1",
+    "sinonjs": "~1.7.1"
   }
 }
