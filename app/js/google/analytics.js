@@ -4,7 +4,7 @@
 define([], function() {
     'use strict';
 
-    var service = function($window) {
+    var service = function(GOOGLE_ANALYTICS_ID, $window) {
         var api = this;
 
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -15,7 +15,7 @@ define([], function() {
 //        var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
 //        _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
 
-        googleAnalytics('create', 'UA-38043860-1', {
+        googleAnalytics('create', GOOGLE_ANALYTICS_ID, {
             'siteSpeedSampleRate': 100
         });
 
@@ -33,6 +33,6 @@ define([], function() {
         };
     };
 
-    service.$inject = ['$window'];
+    service.$inject = ['GOOGLE_ANALYTICS_ID', '$window'];
     return service;
 });
