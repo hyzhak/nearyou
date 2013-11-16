@@ -6,17 +6,18 @@
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap.css"/>
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
     <link rel="stylesheet" type="text/css" href="lib/bootstrap/dist/css/bootstrap-theme.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/angular/angular-csp.css"/>
 </head>
 <body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
     <header class="list-header">
         <ul class="nav nav-pills">
             <li class="title">Photos</li>
-            <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
+            <li ng-class="isActivate('local')"><a ui-sref="local">Near you</a></li>
             <li ><a ng-click="showAbout()">About...</a></li>
         </ul>
     </header>
 
-    <div ng-view class="list-content">
+    <div ui-view class="list-content">
     </div>
 
     <footer class="inline list-footer">

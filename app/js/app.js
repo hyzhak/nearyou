@@ -9,16 +9,42 @@ define([
     'app/services',
     'text!partials/bestofinstagram.html'
 ], function(angular, resource, route, router, controllers, directives, factories, services, partialsBestOfInstagram) {
+    'use strict';
 
     // Declare app level module which depends on filters, and services
-    var app = angular.module('myApp', ['ngRoute', 'ngResource']).
-        config(['$routeProvider', function($routeProvider) {
-            'use strict';
-            //$routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
-            $routeProvider.when('/local/:lat/:lng', {template: partialsBestOfInstagram, controller: 'LocalImagesCtrl'});
-            $routeProvider.when('/local', {template: partialsBestOfInstagram, controller: 'RequestUserLocationCtrl'});
-            $routeProvider.otherwise({redirectTo: '/local'});
-        }]);
+    var app = angular.module('myApp', [
+        'ngResource',
+        'ui.router'
+    ]);
+
+    app.config([
+        '$locationProvider',
+        '$stateProvider',
+        '$urlRouterProvider',
+    function($locationProvider, $stateProvider, $urlRouterProvider) {
+
+        $locationProvider.html5Mode(false).hashPrefix('!');
+
+        $urlRouterProvider.otherwise('local');
+
+        $stateProvider
+            .state('local', {
+                url: '/local',
+                controller: 'RequestUserLocationCtrl',
+                template: partialsBestOfInstagram
+            })
+            .state('at', {
+                url: '/at/:lat/:lng',
+                controller: 'LocalImagesCtrl',
+                template: partialsBestOfInstagram
+            });
+
+
+        //$routeProvider.when('/bestof', {templateUrl: 'partials/bestofinstagram.html', controller: 'BestOfInstagramCtrl'});
+//        $routeProvider.when('/local/:lat/:lng', {template: partialsBestOfInstagram, controller: 'LocalImagesCtrl'});
+//        $routeProvider.when('/local', {template: partialsBestOfInstagram, controller: 'RequestUserLocationCtrl'});
+//        $routeProvider.otherwise({redirectTo: '/local'});
+    }]);
 
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
     app.constant('instagramClintId', '39a6f9437c464ef684d543880969764d');

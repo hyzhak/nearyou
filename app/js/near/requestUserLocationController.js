@@ -1,6 +1,6 @@
 define([], function() {
     'use strict';
-    var ctrl = function(GoogleAnalytics, SearchState, $window) {
+    var ctrl = function(GoogleAnalytics, SearchState, $window, $location, $scope) {
         GoogleAnalytics.trackPage('request-location');
         SearchState.setState('local');
         var options = {timeout:60000};
@@ -8,7 +8,10 @@ define([], function() {
             GoogleAnalytics.trackPage('user-apply-getlocation');
             var lat = position.coords.latitude.toFixed(2);
             var lng = position.coords.longitude.toFixed(2);
-            $window.location.href = $window.location.href + '/' + lat + '/' + lng;
+//            $window.location.href = $window.location.href + '/' + lat + '/' + lng;
+            $scope.$apply(function() {
+                $location.path('/at/' + lat + '/' + lng);
+            });
         }, function(){
             GoogleAnalytics.trackPage('user-reject-getlocation');
             console.log('TODO : just guess! Maybe NY? Central Park!');
@@ -20,7 +23,9 @@ define([], function() {
     ctrl.$inject = [
         'GoogleAnalytics',
         'SearchState',
-        '$window'
+        '$window',
+        '$location',
+        '$scope'
     ];
     return ctrl;
 });
