@@ -19,7 +19,7 @@ module.exports = function(config) {
       { pattern: 'app/lib/angular/angular.js' },
       { pattern: 'app/lib/angular-resource/angular-resource.js' },
       { pattern: 'app/lib/angular-mocks/angular-mocks.js' },
-      'app/lib/sinonjs/sinon-1.7.3.js',
+      'app/lib/sinonjs/sinon.js',
       'app/lib/jasmine-sinon/lib/jasmine-sinon.js',
       'tests/unit/test-main.js'
     ],
