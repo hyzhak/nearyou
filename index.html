@@ -1,23 +1,22 @@
 <!doctype html>
-<html lang="en" ng-app="myApp">
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Instagram on the AngularJS</title>
-    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.css"/>
+    <title>Near you</title>
     <link rel="stylesheet" type="text/css" href="css/main.css"/>
-    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.css"/>
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css">
 </head>
 <body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
     <header class="list-header">
-        <h1>Instagram Slideshow</h1>
         <ul class="nav nav-pills">
-            <li ng-class="isActivate('bestof')"><a href="#/bestof">Best Of</a></li>
-            <li ng-class="isActivate('local')"><a href="#/local">Near you</a></li>
+            <li class="title">Photos</li>
+            <li ng-class="isActivate('local')"><a ui-sref="local">Near you</a></li>
             <li ><a ng-click="showAbout()">About...</a></li>
         </ul>
     </header>
 
-    <div ng-view class="list-content">
+    <div ui-view class="list-content">
     </div>
 
     <footer class="inline list-footer">
@@ -30,7 +29,7 @@
     <div id="aboutWindow" class="modal hide fade">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3>Insta/gular.js</h3>
+            <h3>Photos near U.</h3>
         </div>
         <div class="modal-body">
             <p>It's just application of mashup of hip from instagram and high tech from <a target="_blank" href="http://angularjs.org">angular.js.</a></p>
@@ -42,26 +41,7 @@
         </div>
     </div>
 
-    <script src="lib/angular/angular.js"></script>
-    <script src="lib/angular/angular-resource.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="lib/bootstrap/js/bootstrap.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/services.js"></script>
-    <script src="js/controllers.js"></script>
-
-    <script type="text/javascript">
-
-        var _gaq = _gaq || [];
-        _gaq.push(['_setAccount', 'UA-38043860-1']);
-        _gaq.push(['_trackPageview']);
-
-        (function() {
-            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-        })();
-
-    </script>
+    <script src="js/nearyou.js"></script>
+    <!--<script data-main="js/nearyou.js" src="js/require.js"></script>-->
 </body>
 </html>
