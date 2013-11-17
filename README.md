@@ -1,6 +1,6 @@
-instagular-js
-=============
+Photos near you
+===============
 
-[![Build Status](https://travis-ci.org/Hyzhak/instagular-js.png?branch=master)](https://travis-ci.org/Hyzhak/instagular-js)
+[![Build Status](https://travis-ci.org/Hyzhak/nearyou.png?branch=master)](https://travis-ci.org/Hyzhak/nearyou)
 
-Instagram on the AngularJS
+Get photos near you.
