@@ -1,7 +1,7 @@
 define([], function() {
     'use strict';
 
-    var ctrl = function(GoogleAnalytics, LocalImages, instagramClintId, SearchState, $stateParams, $scope, $window) {
+    var ctrl = function(GoogleAnalytics, LocalImages, instagramClintId, SearchState, $document, $stateParams, $scope, $window) {
         SearchState.setState('local');
 
         var lat = $stateParams.lat;
@@ -28,19 +28,20 @@ define([], function() {
             });
         };
 
-        $window.onscroll = catchLastPartOfTheImages($scope, $window);
-    };
+        $window.onscroll = catchLastPartOfTheImages();
 
-    function catchLastPartOfTheImages($scope, $window){
-        return function(){
-            var nVScroll = document.documentElement.scrollTop || document.body.scrollTop;
-            if(nVScroll > 3 * (document.height - $window.innerHeight ) / 4){
-                if(!$scope.hasRequested){
-                    $scope.requestMore();
+        function catchLastPartOfTheImages(){
+            return function(){
+                var nVScroll = (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+                if(nVScroll > 3 * ($document[0].documentElement.offsetHeight - $window.innerHeight ) / 4){
+                    if(!$scope.hasRequested){
+                        $scope.requestMore();
+                    }
                 }
             }
         }
-    }
+    };
+
 
     function mergeImageCollections(target, source){
         for(var index = 0, count = source.length; index < count; index++){
@@ -78,6 +79,7 @@ define([], function() {
         'LocalImages',
         'instagramClintId',
         'SearchState',
+        '$document',
         '$stateParams',
         '$scope',
         '$window'
