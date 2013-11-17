@@ -2,7 +2,7 @@
   "name": "images-nearyou",
   "shortName": "nearyou",
   "description": "Images near you.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "homepage": "https://github.com/Hyzhak/instagular-js",
   "author": "Eugene Krevenets",
   "licenses": [
@@ -32,7 +32,8 @@
     "grunt": "~0.4.1",
     "grunt-contrib-requirejs": "~0.4.1",
     "grunt-contrib-copy": "~0.4.1",
-    "grunt-preprocess": "~3.0.1"
+    "grunt-preprocess": "~3.0.1",
+    "grunt-github-pages": "0.0.3"
   },
   "scripts": {
     "test": "./node_modules/coffee-script/bin/cake test"
