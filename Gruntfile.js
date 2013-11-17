@@ -23,6 +23,13 @@ module.exports = function (grunt) {
                 src : 'app/index.html',
                 dest : 'build/index.html'
             }
+        },
+        copy: {
+            main: {
+                files: [
+//                    {expand: true, src: ['path/*'], dest: 'dest/', filter: 'isFile'},
+                ]
+            }
         }
     });
 
@@ -31,5 +38,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-preprocess');
 
     // Default task(s).
-    grunt.registerTask('default', ['requirejs', 'preprocess']);
+    grunt.registerTask('default', ['requirejs', 'preprocess', 'copy']);
 };

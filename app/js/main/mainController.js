@@ -1,6 +1,5 @@
 define([
-    'jquery'
-], function($) {
+], function() {
     var ctrl = function(GoogleAnalytics, $scope, SearchState){
 
         'use strict';
@@ -28,16 +27,16 @@ define([
         };
 
         $scope.showAbout = function(){
-            $('#aboutWindow').modal('show');
+            /*$('#aboutWindow').modal('show');*/
             GoogleAnalytics.trackPage('show-about');
         };
 
         $scope.hideAbout = function(){
-            $('#aboutWindow').modal('hide');
+            /*$('#aboutWindow').modal('hide');*/
             GoogleAnalytics.trackPage('hide-about');
         };
 
-        $('#aboutWindow').on('show', function (e) {
+        /*$('#aboutWindow').on('show', function (e) {
             $scope.lockScroll = true;
             GoogleAnalytics.trackPage('on-show-about');
             //break
@@ -49,7 +48,7 @@ define([
             $scope.$apply(function(){
                 $scope.lockScroll = false;
             });
-        });
+        });*/
     };
 
     ctrl.$inject = [

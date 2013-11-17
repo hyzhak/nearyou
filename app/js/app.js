@@ -1,14 +1,13 @@
 define([
     'angular',
     'angular-resource',
-    'angular-route',
     'angular-ui-router',
     'app/controllers',
     'app/directives',
     'app/factories',
     'app/services',
     'text!partials/bestofinstagram.html'
-], function(angular, resource, route, router, controllers, directives, factories, services, partialsBestOfInstagram) {
+], function(angular, resource, router, controllers, directives, factories, services, partialsBestOfInstagram) {
     'use strict';
 
     // Declare app level module which depends on filters, and services
