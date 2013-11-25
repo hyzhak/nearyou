@@ -32,8 +32,13 @@ define([
                 controller: 'RequestUserLocationCtrl',
                 template: imagesListTemplate
             })
-            .state('at-with-location', {
-                url: '/at/:lat/:lng',
+            .state('locate-with-location', {
+                url: '/at/?lat&lng&distance',
+                controller: 'LocalImagesCtrl',
+                template: imagesListTemplate
+            }).
+            state('locate-with-venue', {
+                url: '/at/{place}/?lat&lng&distance',
                 controller: 'LocalImagesCtrl',
                 template: imagesListTemplate
             });

@@ -4,13 +4,18 @@ define([], function() {
     var ctrl = function(GoogleAnalytics, LocalImages, instagramClintId, SearchState, $document, $stateParams, $scope, $window) {
         SearchState.setState('local');
 
-        var lat = $stateParams.lat;
-        var lng = $stateParams.lng;
-        GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + ']');
+        var lat = $stateParams.lat,
+            lng = $stateParams.lng,
+            distance = $stateParams.distance;
+        GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + '], distance: ' + distance);
+
+        $scope.distance = distance;
+
         $scope.instagramResult = LocalImages.query({
             clientId: instagramClintId,
             lat: lat,
             lng: lng,
+            distance: distance,
             max_timestamp: Math.round(Date.now() / 1000)
         });
 
@@ -31,6 +36,7 @@ define([], function() {
                 clientId: instagramClintId,
                 lat: lat,
                 lng: lng,
+                distance: $scope.distance,
                 max_timestamp: from
             }, function(result){
                 $scope.hasRequested = false;
@@ -54,6 +60,7 @@ define([], function() {
 
 
     function mergeImageCollections(target, source){
+        target = target || [];
         for(var index = 0, count = source.length; index < count; index++){
             var image = source[index];
             if(!getImageById(target, image.id)){
@@ -63,6 +70,10 @@ define([], function() {
     }
 
     function getImageById(collection, id){
+        if (!collection) {
+            return null;
+        }
+
         for(var index = 0, count = collection.length; index < count; index++){
             var image = collection[index];
             if(image.id == id){
