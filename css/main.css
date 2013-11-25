@@ -1,3 +1,7 @@
+body {
+  color: white;
+  background-color: #0c0c0c; }
+
 .lockScroll {
   overflow: hidden; }
 
@@ -8,7 +12,7 @@
   top: 0;
   width: 100%;
   z-index: 1000;
-  background-color: white; }
+  background-color: #3c3f41; }
   .list-header .title {
     margin: 4px;
     font-size: 22px; }
@@ -23,7 +27,7 @@
   bottom: 0;
   width: 100%;
   z-index: 1000;
-  background-color: white; }
+  background-color: #3c3f41; }
 
 .copy-right {
   color: black; }
@@ -32,3 +36,10 @@
   margin: 0 auto;
   width: 612px;
   height: 612px; }
+
+.instagram-caption {
+  margin: 0 auto;
+  vertical-align: middle;
+  width: 612px;
+  height: 32px;
+  font-size: 20px; }
