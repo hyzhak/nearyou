@@ -9,19 +9,29 @@ define([], function() {
         GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + ']');
         $scope.instagramResult = LocalImages.query({
             clientId: instagramClintId,
-            lat:lat, lng:lng,
+            lat: lat,
+            lng: lng,
             max_timestamp: Math.round(Date.now() / 1000)
         });
 
         $scope.hasRequested = false;
         $scope.requestMore = function(){
+            var from;
+            if ($scope.instagramResult.data) {
+                var earlyImage = getEarlyImage($scope.instagramResult.data);
+                from = earlyImage.created_time;
+            } else {
+                from = Math.round(Date.now() / 1000);
+            }
+
             GoogleAnalytics.trackPage('request-more');
             $scope.hasRequested = true;
-            var earlyImage = getEarlyImage($scope.instagramResult.data);
+
             LocalImages.query({
                 clientId: instagramClintId,
-                lat:lat, lng:lng,
-                max_timestamp:earlyImage.created_time
+                lat: lat,
+                lng: lng,
+                max_timestamp: from
             }, function(result){
                 $scope.hasRequested = false;
                 mergeImageCollections($scope.instagramResult.data, result.data);

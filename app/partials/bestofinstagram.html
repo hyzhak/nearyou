@@ -6,9 +6,10 @@
         </a>
       </div>
       <div class="instagram-caption">
-        <span>{{image.likes.count}} Likes</span>
-        <span>by {{image.user.username}}</span>
-        <span>{{image.location.name}}</span>
+        <span><a href ng-click="like(image)">{{image.likes.count}} Likes</a></span>
+        <span>by <a ng-href="http://instagram.com/{{image.user.username}}" target="_blank">{{image.user.username}}</a></span>
+        <span ng-if="image.location.name"><a href ng-click="relocate(image.location)">{{image.location.name}}</a></span>
+        <span ng-if="!image.location.name"><a ui-sref="at-with-location({lat: image.location.latitude, lng: image.location.longitude})" ng-click="relocate(image.location)"><i>near</i></a></span>
       </div>
     </div>
 </div>
