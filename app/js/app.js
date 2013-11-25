@@ -6,8 +6,8 @@ define([
     'app/directives',
     'app/factories',
     'app/services',
-    'text!partials/bestofinstagram.html'
-], function(angular, resource, router, controllers, directives, factories, services, partialsBestOfInstagram) {
+    'text!partials/images-list.html'
+], function(angular, resource, router, controllers, directives, factories, services, imagesListTemplate) {
     'use strict';
 
     // Declare app level module which depends on filters, and services
@@ -30,12 +30,12 @@ define([
             .state('at', {
                 url: '/at',
                 controller: 'RequestUserLocationCtrl',
-                template: partialsBestOfInstagram
+                template: imagesListTemplate
             })
             .state('at-with-location', {
                 url: '/at/:lat/:lng',
                 controller: 'LocalImagesCtrl',
-                template: partialsBestOfInstagram
+                template: imagesListTemplate
             });
     }]);
 
