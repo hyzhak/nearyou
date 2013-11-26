@@ -1,12 +1,14 @@
 define([
     'app/near/localImagesController',
     'app/near/requestUserLocationController',
-    'app/main/mainController'
-], function(LocalImagesCtrl, RequestUserLocationCtrl, MainCtrl) {
+    'app/main/mainController',
+    'app/ui/FooterController',
+], function(LocalImagesCtrl, RequestUserLocationCtrl, MainCtrl, FooterController) {
     'use strict';
     return {
         'LocalImagesCtrl': LocalImagesCtrl,
         'RequestUserLocationCtrl': RequestUserLocationCtrl,
-        'MainCtrl': MainCtrl
+        'MainCtrl': MainCtrl,
+        'FooterController': FooterController,
     };
 });

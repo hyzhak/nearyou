@@ -6,8 +6,17 @@ define([
     'app/directives',
     'app/factories',
     'app/services',
-    'text!partials/images-list.html'
-], function(angular, resource, router, controllers, directives, factories, services, imagesListTemplate) {
+    'text!partials/images-list.html',
+    'text!partials/places.html',
+], function(angular,
+            resource,
+            router,
+            controllers,
+            directives,
+            factories,
+            services,
+            imagesListTemplate,
+            placesTempate) {
     'use strict';
 
     // Declare app level module which depends on filters, and services
@@ -32,15 +41,19 @@ define([
                 controller: 'RequestUserLocationCtrl',
                 template: imagesListTemplate
             })
-            .state('locate-with-location', {
+            .state('at-with-location', {
                 url: '/at/?lat&lng&distance',
                 controller: 'LocalImagesCtrl',
                 template: imagesListTemplate
             }).
-            state('locate-with-venue', {
+            state('at-with-venue', {
                 url: '/at/{place}/?lat&lng&distance',
                 controller: 'LocalImagesCtrl',
                 template: imagesListTemplate
+            }).
+            state('places', {
+                url: '/places/?lat&lng&distance',
+                template: placesTempate
             });
     }]);
 

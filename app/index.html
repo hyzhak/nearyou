@@ -30,25 +30,38 @@
 </head>
 
 <body ng-controller="MainCtrl" ng-class="isTrue(lockScroll, 'lockScroll', '')">
-    <header class="list-header">
+    <!--<header class="list-header">
         <ul class="nav nav-pills">
             <li class="title">Photos</li>
             <li ng-class="isActivate('local')"><a ui-sref="local">Near you</a></li>
             <li ><a ng-click="showAbout()">About...</a></li>
         </ul>
-    </header>
+    </header>-->
 
     <div ui-view class="list-content">
     </div>
 
-    <footer class="inline list-footer">
-        <div class="copy-right">
+    <footer class="inline list-footer" ng-controller="FooterController">
+        <!--<div class="copy-right">
             <a target="_blank" href="http://hyzhak.github.com/"><span class="label label-info">(C) Hyzhak & Burenka <span ng-bind="year"></span> </span></a>
             <a ng-click="showAbout()">About...</a>
-        </div>
+        </div>-->
+      <ul class="nav nav-pills">
+        <li class="title">Photos</li>
+        <li ng-class="{active: !location.place}"><a ui-sref="at">Near you</a></li>
+        <li class="active"
+            ng-if="!!location.place"
+            >
+          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">{{location.place}}</a>
+        </li>
+        <li ng-if="!location.place">
+          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance})">Places</a>
+        </li>
+        <li ><a ng-click="showAbout()">About...</a></li>
+      </ul>
     </footer>
 
-    <div id="aboutWindow" class="modal hide fade">
+    <!--<div id="aboutWindow" class="modal hide fade">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h3>Photos near U.</h3>
@@ -61,7 +74,7 @@
             <a ng-click="hideAbout()" class="btn">Close</a>
             <a target="_blank" href="http://hyzhak.github.com/" class="btn btn-primary">Main Page</a>
         </div>
-    </div>
+    </div>-->
     <!-- @ifdef DEBUG=true -->
     <script data-main="js/main.js" src="lib/requirejs/require.js"></script>
     <!-- @endif -->
