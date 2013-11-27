@@ -9,6 +9,8 @@ requirejs.config({
         'angular-resource': 'lib/angular-resource/angular-resource',
 //        'angular-route': 'lib/angular-route/angular-route',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
+        'leaflet': 'lib/leaflet',
+        'leaflet-directive': 'lib/angular-leaflet/src/angular-leaflet-directive'
         /*'jquery': [
             'http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min',
             'lib/jquery/jquery'
@@ -31,6 +33,9 @@ requirejs.config({
             deps: ['angular']
         },
         'angular-ui-router': {
+            deps: ['angular']
+        },
+        'leaflet-directive': {
             deps: ['angular']
         }
         /*'jquery':{

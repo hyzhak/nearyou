@@ -2,6 +2,7 @@ define([
     'angular',
     'angular-resource',
     'angular-ui-router',
+    'leaflet-directive',
     'app/controllers',
     'app/directives',
     'app/factories',
@@ -11,6 +12,7 @@ define([
 ], function(angular,
             resource,
             router,
+            leafletDirective,
             controllers,
             directives,
             factories,
@@ -22,7 +24,8 @@ define([
     // Declare app level module which depends on filters, and services
     var app = angular.module('myApp', [
         'ngResource',
-        'ui.router'
+        'leaflet-directive',
+        'ui.router',
     ]);
 
     app.config([
@@ -53,6 +56,7 @@ define([
             }).
             state('places', {
                 url: '/places/?lat&lng&distance',
+                controller: 'PlacesCtrl',
                 template: placesTempate
             });
     }]);
@@ -65,6 +69,11 @@ define([
     app.directive(directives);
     app.factory(factories);
     app.service(services);
+
+    app.run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
+        $rootScope.$state = $state;
+        $rootScope.$stateParams = $stateParams;
+    }]);
 
     app.service('SearchState', function(){
         'use strict';

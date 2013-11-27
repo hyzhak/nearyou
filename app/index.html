@@ -42,22 +42,26 @@
     </div>
 
     <footer class="inline list-footer" ng-controller="FooterController">
-        <!--<div class="copy-right">
-            <a target="_blank" href="http://hyzhak.github.com/"><span class="label label-info">(C) Hyzhak & Burenka <span ng-bind="year"></span> </span></a>
-            <a ng-click="showAbout()">About...</a>
-        </div>-->
       <ul class="nav nav-pills">
-        <li class="title">Photos</li>
-        <li ng-class="{active: !location.place}"><a ui-sref="at">Near you</a></li>
+        <li class="title">
+          Photos
+        </li>
+        <li ng-class="{ active: $state.includes('at-with-location')}">
+          <a ui-sref="at">Near you</a>
+        </li>
         <li class="active"
-            ng-if="!!location.place"
+            ng-if="$state.includes('at-with-venue')"
             >
-          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">{{location.place}}</a>
+          <a>
+            {{location.place}}
+          </a>
         </li>
-        <li ng-if="!location.place">
-          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance})">Places</a>
+        <li ng-class="{ active: $state.includes('places')}">
+          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">Map</a>
         </li>
-        <li ><a ng-click="showAbout()">About...</a></li>
+        <li ng-class="{ active: $state.includes('about')}">
+          <a ng-click="showAbout()">About...</a>
+        </li>
       </ul>
     </footer>
 
