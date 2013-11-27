@@ -2,6 +2,10 @@ body {
   color: white;
   background-color: #0c0c0c; }
 
+#map {
+  height: 200px;
+  color: black; }
+
 .lockScroll {
   overflow: hidden; }
 
@@ -13,12 +17,6 @@ body {
   width: 100%;
   z-index: 1000;
   background-color: #3c3f41; }
-  .list-header .title {
-    margin: 4px;
-    font-size: 22px; }
-
-.list-content {
-  padding-top: 44px; }
 
 .list-footer {
   position: fixed;
@@ -28,6 +26,9 @@ body {
   width: 100%;
   z-index: 1000;
   background-color: #3c3f41; }
+  .list-footer .title {
+    margin: 4px;
+    font-size: 22px; }
 
 .copy-right {
   color: black; }
