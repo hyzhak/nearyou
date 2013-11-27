@@ -62,7 +62,7 @@ define([
     }]);
 
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
-    app.constant('instagramClintId', '39a6f9437c464ef684d543880969764d');
+    app.constant('INSTAGRAM_CLIENT_ID', '39a6f9437c464ef684d543880969764d');
     app.constant('GOOGLE_ANALYTICS_ID', 'UA-38043860-1');
 
     app.controller(controllers);

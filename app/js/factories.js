@@ -1,10 +1,12 @@
 define([
     'app/instagram/bestImages',
     'app/instagram/localImages',
-], function(BestOfImages, LocalImages) {
+    'app/instagram/locations',
+], function(BestOfImages, LocalImages, Locations) {
     'use strict';
     return {
         'BestOfImages': BestOfImages,
-        'LocalImages': LocalImages
+        'LocalImages': LocalImages,
+        'Locations': Locations
     };
 });

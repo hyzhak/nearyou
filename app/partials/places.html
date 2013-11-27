@@ -1,14 +1,9 @@
-<div>
-  <leaflet id="map" markers="markers" center="center" events="events" custom-controls="myCustomControls">
-  </leaflet>
-</div>
+<leaflet id="map" markers="markers" center="center" events="events" custom-controls="myCustomControls">
+</leaflet>
 <ul>
-  <li>hello-1</li>
-  <li>hello-2</li>
-  <li>hello-3</li>
-  <li>hello-4</li>
-  <li>hello-5</li>
-  <li>hello-6</li>
-  <li>hello-7</li>
-  <li>hello-8</li>
+  <li ng-repeat="place in markers">
+    <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: place.title})">
+    {{place.title}}
+    </a>
+  </li>
 </ul>

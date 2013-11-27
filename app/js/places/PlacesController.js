@@ -1,15 +1,33 @@
 define([], function() {
     'use strict';
 
-    var ctrl = function(GoogleAnalytics, LocationStateService, $scope) {
+    var ctrl = function(INSTAGRAM_CLIENT_ID, GoogleAnalytics, LocationStateService, Locations, $scope) {
         GoogleAnalytics.trackPage('places');
 
         $scope.center = {
             lat: LocationStateService.lat,
-            lng: LocationStateService.lng
+            lng: LocationStateService.lng,
+            zoom: 14
         };
 
         $scope.markers = {};
+
+        Locations.query({
+            clientId: INSTAGRAM_CLIENT_ID,
+            lat: LocationStateService.lat,
+            lng: LocationStateService.lng
+        }).$promise.then(function(data) {
+            if (data.data) {
+                data.data.forEach(function(venue) {
+                    $scope.markers[venue.id] = {
+                        lat: venue.latitude,
+                        lng: venue.longitude,
+                        message: venue.name,
+                        title: venue.name
+                    };
+                });
+            }
+        });
 
         $scope.events = {
             dblclick: function(e){
@@ -40,8 +58,10 @@ define([], function() {
     };
 
     ctrl.$inject = [
+        'INSTAGRAM_CLIENT_ID',
         'GoogleAnalytics',
         'LocationStateService',
+        'Locations',
         '$scope'
     ];
 

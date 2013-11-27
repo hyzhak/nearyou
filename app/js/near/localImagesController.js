@@ -1,7 +1,7 @@
 define([], function() {
     'use strict';
 
-    var ctrl = function(GoogleAnalytics, LocalImages, LocationStateService, instagramClintId, SearchState, $document, $stateParams, $scope, $window) {
+    var ctrl = function(GoogleAnalytics, LocalImages, LocationStateService, INSTAGRAM_CLIENT_ID, SearchState, $document, $stateParams, $scope, $window) {
         SearchState.setState('local');
 
         var lat = $stateParams.lat,
@@ -9,9 +9,9 @@ define([], function() {
             distance = $stateParams.distance;
         GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + '], distance: ' + distance);
 
-        LocationStateService.lat = lat;
-        LocationStateService.lng = lng;
-        LocationStateService.distance = distance;
+        LocationStateService.lat = Number(lat);
+        LocationStateService.lng = Number(lng);
+        LocationStateService.distance = Number(distance);
         LocationStateService.place = $stateParams.place;
 
         $scope.lat = lat;
@@ -20,7 +20,7 @@ define([], function() {
         $scope.place = $stateParams.place;
 
         $scope.instagramResult = LocalImages.query({
-            clientId: instagramClintId,
+            clientId: INSTAGRAM_CLIENT_ID,
             lat: lat,
             lng: lng,
             distance: distance,
@@ -41,7 +41,7 @@ define([], function() {
             $scope.hasRequested = true;
 
             LocalImages.query({
-                clientId: instagramClintId,
+                clientId: INSTAGRAM_CLIENT_ID,
                 lat: lat,
                 lng: lng,
                 distance: $scope.distance,
@@ -107,7 +107,7 @@ define([], function() {
         'GoogleAnalytics',
         'LocalImages',
         'LocationStateService',
-        'instagramClintId',
+        'INSTAGRAM_CLIENT_ID',
         'SearchState',
         '$document',
         '$stateParams',
