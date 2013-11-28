@@ -10,7 +10,7 @@
 </div>
 <div class="under-map"></div>
 <ul id="places-list">
-  <li ng-repeat="place in markers" class="list-unstyled" ng-mouseover="focusOn(place)">
+  <li ng-repeat="place in markers track by place.id" class="list-unstyled animate-repeat" ng-mouseover="focusOn(place)">
     <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: place.title})">
     {{place.title}}
     </a>

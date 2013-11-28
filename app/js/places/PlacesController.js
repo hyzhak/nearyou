@@ -12,10 +12,63 @@ define([
             zoom: 14
         };
 
+        angular.extend($scope, {
+            defaults: {
+                maxZoom: 16
+            }
+        });
+
         $scope.markers = {};
+
+        $scope.focusOn = function(place) {
+            var marker = $scope.markers[place.id];
+            if(!marker || !beforeFocusOnMarker(marker)) {
+                return;
+            }
+            marker.focus = true;
+            previousFocusedMarker = marker;
+            afterFocusOnMarker(marker);
+        };
+
+        $scope.events = {
+            dblclick: function(e){
+                console.log(e);
+            },
+            click: function(e) {
+                console.log(e);
+            },
+            zoomend: function(e) {
+                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
+                trackCenterToGoogleAnalytics();
+                hideInvisibleMarkers();
+            },
+            dragend: function(e) {
+                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
+                trackCenterToGoogleAnalytics();
+                hideInvisibleMarkers();
+            },
+            moveend: function(e) {
+//                if (needInitialize) {
+//                    var sw = e.target.getBounds().getSouthWest(),
+//                        ne = e.target.getBounds().getNorthEast();
+//                    lazyUpdateBounds(sw, ne);
+//                    LocationService.setLocation(0.5 * (sw.lat + ne.lat), 0.5 * (sw.lng + ne.lng), $scope.center.zoom);
+//
+//                    needInitialize = false;
+//                }
+            }
+        };
+
+        $scope.$on('leafletDirectiveMarkersClick', function(e, id) {
+            var marker = $scope.markers[id];
+            //$rootScope.$broadcast('selectMarkerOnMap', id);
+            beforeFocusOnMarker(marker);
+            afterFocusOnMarker(marker);
+        });
 
         fetchVenuesFromInstagram();
         trackCenterToGoogleAnalytics();
+
 
         /**
          * @private
@@ -41,14 +94,9 @@ define([
             }).$promise.then(function(data) {
                 if (data.response.venues) {
                     data.response.venues.forEach(function(venue) {
-                        var iconResource = venue.categories[0].icon,
-                            size = 64,
-                            icon = L.icon({
-                                iconUrl: iconResource.prefix + size + iconResource.suffix,
-                                iconSize: [size, size]
-                            });
                         $scope.markers[venue.id] = {
                             //icon: icon,
+                            id: venue.id,
                             lat: venue.location.lat,
                             lng: venue.location.lng,
                             message: venue.name,
@@ -72,6 +120,7 @@ define([
                 if (data.data) {
                     data.data.forEach(function(venue) {
                         $scope.markers[venue.id] = {
+                            id: venue.id,
                             lat: venue.latitude,
                             lng: venue.longitude,
                             message: venue.name,
@@ -171,35 +220,24 @@ define([
             fetchVenuesFromFourSquare();
         }
 
+        var previousFocusedMarker = null;
 
-        $scope.events = {
-            dblclick: function(e){
-                console.log(e);
-            },
-            click: function(e) {
-                console.log(e);
-            },
-            zoomend: function(e) {
-                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
-                trackCenterToGoogleAnalytics();
-                hideInvisibleMarkers();
-            },
-            dragend: function(e) {
-                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
-                trackCenterToGoogleAnalytics();
-                hideInvisibleMarkers();
-            },
-            moveend: function(e) {
-//                if (needInitialize) {
-//                    var sw = e.target.getBounds().getSouthWest(),
-//                        ne = e.target.getBounds().getNorthEast();
-//                    lazyUpdateBounds(sw, ne);
-//                    LocationService.setLocation(0.5 * (sw.lat + ne.lat), 0.5 * (sw.lng + ne.lng), $scope.center.zoom);
-//
-//                    needInitialize = false;
-//                }
+        function beforeFocusOnMarker(marker) {
+            if (previousFocusedMarker === marker) {
+                return false;
             }
-        };
+
+            if (!previousFocusedMarker) {
+                return true;
+            }
+
+            previousFocusedMarker.focus = false;
+            return true;
+        }
+
+        function afterFocusOnMarker(marker) {
+            previousFocusedMarker = marker;
+        }
     };
 
     ctrl.$inject = [

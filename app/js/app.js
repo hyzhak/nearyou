@@ -1,6 +1,7 @@
 define([
     'angular',
     'angular-resource',
+    'angular-animate',
     'angular-ui-router',
     'leaflet-directive',
     'app/controllers',
@@ -11,6 +12,7 @@ define([
     'text!partials/places.html',
 ], function(angular,
             resource,
+            animate,
             router,
             leafletDirective,
             controllers,
@@ -24,6 +26,7 @@ define([
     // Declare app level module which depends on filters, and services
     var app = angular.module('myApp', [
         'ngResource',
+        'ngAnimate',
         'leaflet-directive',
         'ui.router',
     ]);
