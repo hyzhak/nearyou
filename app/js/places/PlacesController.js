@@ -31,12 +31,6 @@ define([
         };
 
         $scope.events = {
-            dblclick: function(e){
-                console.log(e);
-            },
-            click: function(e) {
-                console.log(e);
-            },
             zoomend: function(e) {
                 lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
                 trackCenterToGoogleAnalytics();
