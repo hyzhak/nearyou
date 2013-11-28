@@ -12,7 +12,7 @@ requirejs({
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
         'leaflet': 'lib/leaflet-dist/leaflet',
-        'leaflet-directive': 'lib/angular-leaflet/src/angular-leaflet-directive'
+        'leaflet-directive': 'lib/angular-leaflet/dist/angular-leaflet-directive.min'
     },
     shim: {
         'angular': {

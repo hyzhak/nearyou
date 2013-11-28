@@ -32,12 +32,12 @@ define([
 
         $scope.events = {
             zoomend: function(e) {
-                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
+                updateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
                 trackCenterToGoogleAnalytics();
                 hideInvisibleMarkers();
             },
             dragend: function(e) {
-                lazyUpdateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
+                updateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
                 trackCenterToGoogleAnalytics();
                 hideInvisibleMarkers();
             },
@@ -71,6 +71,21 @@ define([
             GoogleAnalytics.trackPage('places [' + $scope.center.lat + ', ' + $scope.center.lng + '],' +
                 'zoom : ' + $scope.center.zoom);
         }
+
+        var lazy = (function(){
+            var timeoutId;
+
+            return function(callback, interval) {
+                if (timeoutId) {
+                    $timeout.cancel(timeoutId);
+                }
+
+                timeoutId = $timeout(function() {
+                    callback();
+                    timeoutId = null;
+                }, interval);
+            }
+        })();
 
         /**
          * fetch venues from 4sq
@@ -211,7 +226,7 @@ define([
                 ne.lng = lngCenter + 0.5 * maxHeight;
             }
 
-            fetchVenuesFromFourSquare();
+            lazy(fetchVenuesFromFourSquare, 2 * 1000);
         }
 
         var previousFocusedMarker = null;
