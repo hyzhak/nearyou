@@ -5,6 +5,7 @@ requirejs.config({
 
         //libs
         'text': 'lib/requirejs-text/text',
+        'css': 'lib/require-css/css',
         'angular': 'lib/angular/angular',
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',

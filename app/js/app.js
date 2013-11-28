@@ -64,6 +64,11 @@ define([
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
     app.constant('INSTAGRAM_CLIENT_ID', '39a6f9437c464ef684d543880969764d');
     app.constant('GOOGLE_ANALYTICS_ID', 'UA-38043860-1');
+    app.constant('FOUR_SQUARE_CLIENT', {
+        currentAPIDate: dateToYMD(new Date()),
+        CLIENT_ID: 'XCYPKEY52MVDGHLNRZH2D3BFTIIPG3QCJRC5XFZ1CN5UELGH',
+        CLIENT_SECRET: 'UJDAHTDQNW1JHPXWVXD2KZQJHIQTF2XBDSH25ZJTLFUHAY3E'
+    });
 
     app.controller(controllers);
     app.directive(directives);
@@ -88,4 +93,11 @@ define([
             }
         }
     });
+
+    function dateToYMD(date) {
+        var d = date.getDate();
+        var m = date.getMonth() + 1;
+        var y = date.getFullYear();
+        return '' + y + (m<=9 ? '0' + m : m) + (d <= 9 ? '0' + d : d);
+    }
 });

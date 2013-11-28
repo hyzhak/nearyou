@@ -28,9 +28,23 @@ define([], function() {
             return preventErrorAlert;
         };
 
-        api.trackPage = function(action, label, value) {
-            googleAnalytics('send', 'event', action, label, value);
+        /**
+         * track page
+         * @param name
+         */
+        api.trackPage = function(name) {
+            googleAnalytics('send', 'pageview', name);
         };
+
+        /**
+         * track event
+         * @param action
+         * @param label
+         * @param value
+         */
+        api.trackEvent = function(action, label, value) {
+            googleAnalytics('send', 'event', action, label, value);
+        }
     };
 
     service.$inject = ['GOOGLE_ANALYTICS_ID', '$window'];

@@ -1,7 +1,13 @@
 define([], function() {
     'use strict';
     var factory = function($resource){
-        return $resource('https://api.instagram.com/v1/locations/search?lat=:lat&lng=:lng&distance=:distance&client_id=:clientId&callback=JSON_CALLBACK',
+        //http://instagram.com/developer/endpoints/locations/
+        return $resource('https://api.instagram.com/v1/locations/search?' +
+            'lat=:lat&' +
+            'lng=:lng&' +
+            'distance=:distance&' +
+            'client_id=:clientId&' +
+            'callback=JSON_CALLBACK',
             {
                 'distance': 5000
             },

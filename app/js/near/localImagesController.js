@@ -7,6 +7,7 @@ define([], function() {
         var lat = $stateParams.lat,
             lng = $stateParams.lng,
             distance = $stateParams.distance;
+
         GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + '], distance: ' + distance);
 
         LocationStateService.lat = Number(lat);
@@ -38,6 +39,7 @@ define([], function() {
             }
 
             GoogleAnalytics.trackPage('request-more');
+
             $scope.hasRequested = true;
 
             LocalImages.query({
