@@ -3,7 +3,15 @@ define([
 ], function() {
     'use strict';
 
-    var ctrl = function(FOUR_SQUARE_CLIENT, FourSquareVenues, INSTAGRAM_CLIENT_ID, GoogleAnalytics, LocationStateService, Locations, $scope, $timeout) {
+    var ctrl = function(FOUR_SQUARE_CLIENT,
+                        FourSquareVenues,
+                        INSTAGRAM_CLIENT_ID,
+                        GoogleAnalytics,
+                        LocationStateService,
+                        Locations,
+                        $rootScope,
+                        $scope,
+                        $timeout) {
         LocationStateService.bounds = {};
 
         $scope.center = {
@@ -20,6 +28,8 @@ define([
 
         $scope.markers = {};
 
+        $scope.selected = null;
+
         $scope.focusOn = function(place) {
             var marker = $scope.markers[place.id];
             if(!marker || !beforeFocusOnMarker(marker)) {
@@ -28,6 +38,7 @@ define([
             marker.focus = true;
             previousFocusedMarker = marker;
             afterFocusOnMarker(marker);
+            $scope.selected = marker;
         };
 
         $scope.events = {
@@ -56,9 +67,16 @@ define([
         $scope.$on('leafletDirectiveMarkersClick', function(e, id) {
             var marker = $scope.markers[id];
             //$rootScope.$broadcast('selectMarkerOnMap', id);
+            $rootScope.$broadcast('scroll-to-place-' + id);
             beforeFocusOnMarker(marker);
             afterFocusOnMarker(marker);
+
+            $scope.selected = marker;
         });
+
+        $scope.search = function(text) {
+            console.log(text);
+        };
 
         fetchVenuesFromInstagram();
         trackCenterToGoogleAnalytics();
@@ -256,6 +274,7 @@ define([
         'GoogleAnalytics',
         'LocationStateService',
         'Locations',
+        '$rootScope',
         '$scope',
         '$timeout'
     ];

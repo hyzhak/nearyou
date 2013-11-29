@@ -3,30 +3,39 @@ body {
   background-color: #0c0c0c; }
 
 .stick-to-top {
-  position: fixed;
   top: 0;
   width: 100%; }
 
 #map {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   width: 100%;
-  height: 200px;
+  height: 100%;
   color: black; }
-
-.under-map {
-  margin-top: 240px; }
 
 #find-place {
   background-color: black; }
 
 #places-list {
-  margin-left: 0;
-  padding: 0; }
+  position: fixed;
+  bottom: 32px;
+  width: 100%;
+  background-color: #111111;
+  opacity: 0.9; }
+  #places-list ul {
+    margin-left: 0;
+    padding: 0;
+    max-height: 200px;
+    overflow-y: auto; }
   #places-list li {
     margin-left: 0;
     padding-left: 16px; }
-    #places-list li:hover {
+    #places-list li.active, #places-list li.active > a {
       color: white;
-      background-color: #181818; }
+      background-color: #030303; }
 
 .lockScroll {
   overflow: hidden; }

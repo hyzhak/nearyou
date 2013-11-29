@@ -1,4 +1,8 @@
-define([], function() {
+define([
+    'app/ui/scrollToOnEvent'
+], function(scrollToOnEvent) {
     'use strict';
-    return {};
+    return {
+        'scrollToOnEvent': scrollToOnEvent
+    };
 });

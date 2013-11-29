@@ -1,18 +1,36 @@
 <div class="stick-to-top">
   <leaflet id="map" markers="markers" center="center" events="events" custom-controls="myCustomControls">
   </leaflet>
-  <form id="find-place" class="form-inline" role="form">
-    <div class="form-group">
-      <input type="text" class="form-control" placeholder="find place">
-    </div>
-    <button type="submit" class="btn btn-default">Find</button>
-  </form>
 </div>
-<div class="under-map"></div>
-<ul id="places-list">
-  <li ng-repeat="place in markers track by place.id" class="list-unstyled animate-repeat" ng-mouseover="focusOn(place)">
-    <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: place.title})">
-    {{place.title}}
-    </a>
-  </li>
-</ul>
+<!--<div class="under-map"></div>-->
+<div id="places-list">
+  <form id="find-place" class="form-inline" role="form">
+    <div class="input-group">
+      <input type="text"
+             class="form-control"
+             placeholder="find place"
+             ng-model="searchText">
+      <span class="input-group-btn">
+        <button type="submit"
+                class="btn btn-primary"
+                ng-click="search(searchText)"
+            >Go!</button>
+      </span>
+    </div>
+  </form>
+  <ul>
+    <li ng-repeat="place in markers track by place.id"
+        class="list-unstyled animate-repeat"
+        scroll-to-on-event="scroll-to-place-{{place.id}}"
+        ng-class="{active: place === selected}"
+        >
+        <!--ng-mouseover="focusOn(place)"-->
+      <button ng-click="focusOn(place)" class="btn btn-small btn-info">
+        <span class="glyphicon glyphicon-map-marker"></span>
+      </button>
+      <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: place.title})">
+      {{place.title}}
+      </a>
+    </li>
+  </ul>
+</div>
