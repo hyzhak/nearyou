@@ -19,6 +19,8 @@ define([], function() {
             'siteSpeedSampleRate': 100
         });
 
+        googleAnalytics('require', 'linkid', 'linkid.js');
+
         googleAnalytics('send', 'pageview');
 
         $window.onerror = function(msg, url, line) {
