@@ -33,6 +33,11 @@ body {
   #places-list li {
     margin-left: 0;
     padding-left: 16px; }
+    #places-list li.favorites {
+      color: red; }
+    #places-list li.new {
+      font-style: italic;
+      background-color: #080808; }
     #places-list li.active, #places-list li.active > a {
       color: white;
       background-color: #030303; }

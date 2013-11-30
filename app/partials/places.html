@@ -1,5 +1,11 @@
 <div class="stick-to-top">
-  <leaflet id="map" markers="markers" center="center" events="events" custom-controls="myCustomControls">
+  <leaflet id="map"
+           markers="markers"
+           center="center"
+           bounds="bounds"
+           paths="paths"
+           events="events"
+           custom-controls="myCustomControls">
   </leaflet>
 </div>
 <!--<div class="under-map"></div>-->
@@ -15,6 +21,9 @@
                 class="btn btn-primary"
                 ng-click="search(searchText)"
             >Go!</button>
+      <label>
+        <input type="checkbox" ng-model="autoUpdate"> Auto Update
+      </label>
       </span>
     </div>
   </form>
@@ -22,7 +31,7 @@
     <li ng-repeat="place in markers track by place.id"
         class="list-unstyled animate-repeat"
         scroll-to-on-event="scroll-to-place-{{place.id}}"
-        ng-class="{active: place === selected}"
+        ng-class="{active: place === selected, new: place.life < 1}"
         >
         <!--ng-mouseover="focusOn(place)"-->
       <button ng-click="focusOn(place)" class="btn btn-small btn-info">
