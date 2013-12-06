@@ -8,6 +8,7 @@ define([
                         FourSquareSearch,
                         INSTAGRAM_CLIENT_ID,
                         GoogleAnalytics,
+                        GoogleGeoCoding,
                         LocationStateService,
                         Locations,
                         $rootScope,
@@ -112,29 +113,45 @@ define([
 
         $scope.search = function(text) {
             GoogleAnalytics.trackEvent('search start', text);
-            FourSquareSearch.get({
-                query: text,
-                ll: $scope.center.lat + ',' + $scope.center.lng,
-                apiVersion: FOUR_SQUARE_CLIENT.currentAPIDate,
-                clientId: FOUR_SQUARE_CLIENT.CLIENT_ID,
-                clientSecret: FOUR_SQUARE_CLIENT.CLIENT_SECRET
+
+            GoogleGeoCoding.get({
+                address: text
             }).$promise.then(function(data) {
-                //updateGeneration();
-                removeAllMarkers();
-                GoogleAnalytics.trackEvent('search end', text, Number(data.response.totalResults));
-                if (data.response.warning && data.response.warning.text) {
-                    GoogleAnalytics.trackEvent('search warning', data.response.warning.text, Number(data.response.totalResults));
-                }
-                var result;
-                data.response.groups.forEach(function(group) {
-                    group.items.forEach(function(item) {
-                        result = addVenueFromFourSquare(item.venue);
-                    });
+                $scope.autoUpdate = false;
+
+                var zoomOnGeoCoding = zoomToGeoCoding(data.results);
+
+                data.results.forEach(function(item) {
+                    addVenueFromGoogleGeoCoding(item);
                 });
 
-                $scope.autoUpdate = false;
-                zoomToMarkers($scope.markers);
-            })
+                var centerLat = ($scope.bounds.southWest.lat + $scope.bounds.northEast.lat)/ 2,
+                    centerLng = ($scope.bounds.southWest.lng + $scope.bounds.northEast.lng)/2;
+
+                FourSquareSearch.get({
+                    query: text,
+                    ll: centerLat + ',' + centerLng,
+                    apiVersion: FOUR_SQUARE_CLIENT.currentAPIDate,
+                    clientId: FOUR_SQUARE_CLIENT.CLIENT_ID,
+                    clientSecret: FOUR_SQUARE_CLIENT.CLIENT_SECRET
+                }).$promise.then(function(data) {
+                    //updateGeneration();
+                    removeAllMarkers();
+                    GoogleAnalytics.trackEvent('search end', text, Number(data.response.totalResults));
+                    if (data.response.warning && data.response.warning.text) {
+                        GoogleAnalytics.trackEvent('search warning', data.response.warning.text, Number(data.response.totalResults));
+                    }
+                    var result;
+                    data.response.groups.forEach(function(group) {
+                        group.items.forEach(function(item) {
+                            result = addVenueFromFourSquare(item.venue);
+                        });
+                    });
+                    if (!zoomOnGeoCoding) {
+                        zoomToMarkers($scope.markers);
+                    }
+                });
+            });
         };
 
         fetchVenuesFromInstagram();
@@ -181,19 +198,62 @@ define([
                 count++;
             });
 
-            switch(count) {
-                case 0:
-                    break;
-                case 1:
+            if (count > 0) {
+                zoomToBounds(minLat, maxLat, minLng, maxLng);
+            }
+        }
+
+        function zoomToGeoCoding(result) {
+            if (result.length <= 0) {
+                return false;
+            }
+            var minLat = Number.MAX_VALUE,
+                maxLat = -Number.MAX_VALUE,
+                minLng = Number.MAX_VALUE,
+                maxLng = -Number.MAX_VALUE;
+
+            var bounds = result[0].geometry.bounds;
+            minLat = Math.min(minLat, bounds.southwest.lat);
+            maxLat = Math.max(maxLat, bounds.northeast.lat);
+            minLng = Math.min(minLng, bounds.southwest.lng);
+            maxLng = Math.max(maxLng, bounds.northeast.lng);
+
+            zoomToBounds(minLat, maxLat, minLng, maxLng);
+
+            return true;
+        }
+
+        /**
+         * zoom to bounds
+         *
+         * @param minLat
+         * @param maxLat
+         * @param minLng
+         * @param maxLng
+         */
+        function zoomToBounds(minLat, maxLat, minLng, maxLng) {
+            if (isNaN(minLat) || isNaN(maxLat) || isNaN(minLng) || isNaN(maxLng)) {
+                //
+            } else {
+                if (minLat === maxLat || minLng === maxLng) {
                     $scope.center.lat = (maxLat + minLat) / 2;
                     $scope.center.lng = (maxLng + minLng) / 2;
-                    break;
-                default:
+                } else {
+                    if (minLat > maxLat) {
+                        var tmp = minLat;
+                        minLat = maxLat;
+                        maxLat = tmp;
+                    }
+                    if (minLng > maxLng) {
+                        var tmp = minLng;
+                        minLng = maxLng;
+                        maxLng = tmp;
+                    }
                     $scope.bounds.southWest.lat = maxLat;
                     $scope.bounds.southWest.lng = maxLng;
                     $scope.bounds.northEast.lat = minLat;
                     $scope.bounds.northEast.lng = minLng;
-                    break;
+                }
             }
         }
 
@@ -215,6 +275,27 @@ define([
                 life: 0,
                 favorites: false
             };
+        }
+
+        function addVenueFromGoogleGeoCoding(item) {
+            /*var id = item.address_components.map(function(component) {
+                return component.long_name;
+            }).join(',').replace(/\s/gi, '-');*/
+            var id = generateID();
+            return $scope.markers[id] = {
+                //icon: icon,
+                id: id,
+                lat: item.geometry.location.lat,
+                lng: item.geometry.location.lng,
+                message: item.address_components[0].long_name,
+                title: item.address_components[0].long_name,
+                life: 0,
+                favorites: false
+            };
+        }
+
+        function generateID() {
+            return Date.now() + '-' + String(Math.random()).substr(2, 100);
         }
 
         /**
@@ -377,6 +458,7 @@ define([
         'FourSquareSearch',
         'INSTAGRAM_CLIENT_ID',
         'GoogleAnalytics',
+        'GoogleGeoCoding',
         'LocationStateService',
         'Locations',
         '$rootScope',
