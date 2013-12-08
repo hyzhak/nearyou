@@ -87,3 +87,8 @@ body {
 .animate-repeat.ng-leave, .animate-repeat.ng-move.ng-move-active, .animate-repeat.ng-enter.ng-enter-active {
   opacity: 1;
   max-height: 40px; }
+
+.limit-height-40 {
+  width: 128px;
+  max-height: 40px;
+  overflow: hidden; }
