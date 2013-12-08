@@ -154,6 +154,12 @@ define([
             });
         };
 
+        $scope.$watch('autoUpdate', function(newValue) {
+            if (newValue) {
+                fetchVenuesFromFourSquare();
+            }
+        });
+
         fetchVenuesFromInstagram();
         trackCenterToGoogleAnalytics();
 
