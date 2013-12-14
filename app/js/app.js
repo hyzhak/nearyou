@@ -7,6 +7,7 @@ define([
     'app/controllers',
     'app/directives',
     'app/factories',
+    'app/google/trackRequestToGoogleAnalytics',
     'app/services',
     'text!partials/images-list.html',
     'text!partials/places.html',
@@ -18,9 +19,10 @@ define([
             controllers,
             directives,
             factories,
+            trackRequestToGoogleAnalytics,
             services,
             imagesListTemplate,
-            placesTempate) {
+            placesTemplate) {
     'use strict';
 
     // Declare app level module which depends on filters, and services
@@ -33,9 +35,13 @@ define([
 
     app.config([
         '$locationProvider',
+        '$httpProvider',
         '$stateProvider',
         '$urlRouterProvider',
-    function($locationProvider, $stateProvider, $urlRouterProvider) {
+    function($locationProvider,
+             $httpProvider,
+             $stateProvider,
+             $urlRouterProvider) {
 
         $locationProvider.html5Mode(false).hashPrefix('!');
 
@@ -60,8 +66,68 @@ define([
             state('places', {
                 url: '/places/?lat&lng&distance',
                 controller: 'PlacesCtrl',
-                template: placesTempate
+                template: placesTemplate
             });
+
+        /**
+         * track API request to the Google Analytics
+         */
+        $httpProvider.responseInterceptors.push(['GoogleAnalytics', '$q', function(GoogleAnalytics, $q) {
+            return function(promise) {
+                return promise.then(function(response) {
+                    var config = mapToTargetUrls(response.config.url);
+                    trackSuccessRequest(config.targetUrl, config.success);
+                    return response;
+                }, function(response) {
+                    var config = mapToTargetUrls(response.config.url);
+                    trackFailedRequest(config.targetUrl, config.success, response.config.status);
+                    return $q.reject(response);
+                });
+            };
+
+            function mapToTargetUrls(testUrl) {
+                var targets = ['get-current-position.appspot.com', 'api.instagram.com', 'api.foursquare.com'],
+                    foundUrl;
+
+                targets.some(function(targetUrl) {
+                    foundUrl = targetUrl;
+                    return buildUrlVerified(targetUrl)(testUrl);
+                });
+
+                if (foundUrl) {
+                    return {
+                        success: true,
+                        targetUrl: foundUrl,
+                        testUrl: testUrl
+                    }
+                } else {
+                    return {
+                        success: false,
+                        targetUrl: testUrl,
+                        testUrl: testUrl
+                    }
+                }
+            }
+
+            function trackSuccessRequest(url, known) {
+                GoogleAnalytics.trackEvent('success-api-request', JSON.stringify({url : url, known: known}));
+            }
+
+            function trackFailedRequest(url, known, status) {
+                GoogleAnalytics.trackEvent('failed-api-request', JSON.stringify({
+                    url : url,
+                    known: known,
+                    status: status
+                }));
+            }
+        }]);
+
+
+        function buildUrlVerified(url) {
+            return function(testUrl) {
+                return new RegExp('(.*)' + url + '(.*)', 'g').test(testUrl);
+            }
+        }
     }]);
 
     //better use your own client-id. Get here: http://instagram.com/developer/clients/manage/
@@ -96,6 +162,11 @@ define([
             }
         }
     });
+
+    trackRequestToGoogleAnalytics.trackUrls([
+        'get-current-position.appspot.com',
+        'api.instagram.com',
+        'api.foursquare.com']);
 
     function dateToYMD(date) {
         var d = date.getDate();
