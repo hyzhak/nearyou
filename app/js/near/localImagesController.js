@@ -8,7 +8,7 @@ define([], function() {
             lng = $stateParams.lng,
             distance = $stateParams.distance;
 
-        GoogleAnalytics.trackPage('local, [' + lat + ', ' + lng + '], distance: ' + distance);
+        GoogleAnalytics.trackPage('{ location: [' + lat + ', ' + lng + '], distance: ' + distance + "}");
 
         LocationStateService.lat = Number(lat);
         LocationStateService.lng = Number(lng);
