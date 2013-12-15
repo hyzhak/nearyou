@@ -10,7 +10,7 @@ define([
     'app/google/trackRequestToGoogleAnalytics',
     'app/services',
     'text!partials/images-list.html',
-    'text!partials/places.html',
+    'text!partials/places.html'
 ], function(angular,
             resource,
             animate,
@@ -30,7 +30,7 @@ define([
         'ngResource',
         'ngAnimate',
         'leaflet-directive',
-        'ui.router',
+        'ui.router'
     ]);
 
     app.config([
