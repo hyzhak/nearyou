@@ -8,7 +8,10 @@ define(['app/images/cacheGenerator'], function(cacheGenerator) {
             lng = $stateParams.lng,
             distance = $stateParams.distance;
 
-        GoogleAnalytics.trackPage('{ location: [' + lat + ', ' + lng + '], distance: ' + distance + "}");
+        GoogleAnalytics.trackPage('{ location: [' + lat + ', ' + lng + '], distance: ' + distance + '}');
+        if ($stateParams.place) {
+            GoogleAnalytics.trackEvent('{ place: ', $stateParams.place + ' }');
+        }
 
         LocationStateService.lat = Number(lat);
         LocationStateService.lng = Number(lng);
