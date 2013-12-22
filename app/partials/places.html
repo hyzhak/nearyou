@@ -39,7 +39,7 @@
       <button ng-click="focusOn(place)" class="btn btn-small btn-info">
         <span class="glyphicon glyphicon-map-marker"></span>
       </button>
-      <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: place.title})">
+      <a ui-sref="at-with-venue({lat: place.lat, lng: place.lng, distance: distance, place: normalizePlaceTitle(place.title)})">
       {{place.title}}
       </a>
     </li>

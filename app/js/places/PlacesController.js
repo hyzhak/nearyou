@@ -191,6 +191,10 @@ define([
             }
         });
 
+        $scope.normalizePlaceTitle = function(value) {
+            return encodeURIComponent(value);
+        };
+
         fetchVenuesFromInstagram();
         trackCenterToGoogleAnalytics();
 

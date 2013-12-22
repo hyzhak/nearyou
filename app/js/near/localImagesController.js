@@ -13,7 +13,7 @@ define(['app/images/cacheGenerator'], function(cacheGenerator) {
         LocationStateService.lat = Number(lat);
         LocationStateService.lng = Number(lng);
         LocationStateService.distance = Number(distance);
-        LocationStateService.place = $stateParams.place;
+        LocationStateService.place =  decodeURIComponent($stateParams.place).substr(0, 80);
 
         $scope.lat = lat;
         $scope.lng = lng;
