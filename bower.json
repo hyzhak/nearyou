@@ -31,7 +31,8 @@
     "require-css": "*",
     "almond": "*",
     "leaflet-dist": "*",
-    "angular-animate": "*"
+    "angular-animate": "*",
+    "leaflet.markerclusterer": "*"
   },
   "devDependencies": {
     "angular-mocks": "*",
