@@ -11,7 +11,8 @@ requirejs.config({
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
         'leaflet': 'lib/leaflet-dist/leaflet',
-        'leaflet-directive': 'lib/angular-leaflet/src/angular-leaflet-directive'
+        'leaflet-directive': 'lib/angular-leaflet/src/angular-leaflet-directive',
+        'leaflet-markerclusterer': 'lib/leaflet.markerclusterer/dist/leaflet.markercluster-src'
     },
     shim: {
         'angular': {
@@ -36,6 +37,9 @@ requirejs.config({
         },
         'leaflet-directive': {
             deps: ['angular', 'leaflet']
+        },
+        'leaflet-markerclusterer': {
+            deps: ['leaflet']
         }
     }
 });

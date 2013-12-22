@@ -1,6 +1,9 @@
 define([
-    'css!lib/leaflet-dist/leaflet.css'
-], function() {
+    'leaflet-markerclusterer',
+    'css!lib/leaflet-dist/leaflet.css',
+    'css!lib/leaflet.markerclusterer/dist/MarkerCluster.css',
+    'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css'
+], function(LeafletMarkerCluster) {
     'use strict';
 
     var ctrl = function(FOUR_SQUARE_CLIENT,
@@ -18,6 +21,8 @@ define([
         var usedImages = [];
 
         LocationStateService.bounds = {};
+
+        console.log('LeafletMarkerCluster' + LeafletMarkerCluster);
 
         $scope.autoUpdate = true;
         $scope.center = {
@@ -38,10 +43,28 @@ define([
                 }
             },
             paths: {
-            }
-        });
-
-        angular.extend($scope, {
+            },
+            layers: {
+                baselayers: {
+                    osm: {
+                        name: 'OpenStreetMap',
+                        type: 'xyz',
+                        url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        layerOptions: {
+                            subdomains: ['a', 'b', 'c'],
+                            attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                            continuousWorld: true
+                        }
+                    }
+                },
+                overlays: {
+                    images: {
+                        name: 'images',
+                        type: 'markercluster',
+                        visible: true
+                    }
+                }
+            },
             defaults: {
                 maxZoom: 16
             }
@@ -280,6 +303,7 @@ define([
                 id: venue.id,
                 lat: venue.location.lat,
                 lng: venue.location.lng,
+                layer: 'images',
                 message: venue.name,
                 title: venue.name,
                 life: 0,
@@ -300,6 +324,7 @@ define([
                 id: id,
                 lat: item.geometry.location.lat,
                 lng: item.geometry.location.lng,
+                layer: 'images',
                 message: item.address_components[0].long_name,
                 title: item.address_components[0].long_name,
                 life: 0,
@@ -376,6 +401,7 @@ define([
                             id: venue.id,
                             lat: venue.latitude,
                             lng: venue.longitude,
+                            layer: 'images',
                             message: venue.name,
                             title: venue.name,
                             life: 0
