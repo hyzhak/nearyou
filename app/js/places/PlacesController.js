@@ -6,7 +6,8 @@ define([
 ], function(LeafletMarkerCluster) {
     'use strict';
 
-    var ctrl = function(FOUR_SQUARE_CLIENT,
+    var ctrl = function(DeletedPlaceService,
+                        FOUR_SQUARE_CLIENT,
                         FourSquareVenues,
                         FourSquareSearch,
                         INSTAGRAM_CLIENT_ID,
@@ -19,8 +20,7 @@ define([
                         $scope,
                         $timeout) {
 
-        var usedImages = [],
-            deletedMarkers = [];
+        var usedImages = [];
 
         LocationStateService.bounds = {};
 
@@ -426,24 +426,7 @@ define([
             });
         }
 
-        /**
-         * @private
-         * get venues from deleted and add them back to visible
-         */
-        function fetchVenuesFromDeleted(sw, ne) {
-            for(var i = deletedMarkers.length - 1; i >= 0; i--) {
-                var marker = deletedMarkers[i];
-                if (isMarkerInBounds(marker, sw, ne)) {
-                    deletedMarkers.splice(i, 1);
-                    $scope.markers[marker.id] = marker;
-                }
-            }
-        }
 
-        function isMarkerInBounds(marker, sw, ne) {
-            return sw.lat <= marker.lat && marker.lat <= ne.lat &&
-                   sw.lng <= marker.lng && marker.lng <= ne.lng;
-        }
 
 
         /**
@@ -491,7 +474,7 @@ define([
                 usedImages.splice(index, 1);
             }
 
-            deletedMarkers.push(marker);
+            DeletedPlaceService.addToDeleted(marker);
 
             delete $scope.markers[id];
         }
@@ -559,6 +542,10 @@ define([
 
             //localVenues = null;
 
+            DeletedPlaceService.fetchVenuesFromDeleted(sw, ne, function(marker) {
+                $scope.markers[marker.id] = marker;
+            });
+
             //TODO: Fix Bounding quadrangles with an area up to approximately 10,000 square kilometers are supported.
             if (ne.lat - sw.lat > maxWidth) {
                 var latCenter = 0.5 * (ne.lat + sw.lat);
@@ -575,8 +562,6 @@ define([
             if ($scope.autoUpdate) {
                 lazy(fetchVenuesFromFourSquare, 2 * 1000);
             }
-
-            fetchVenuesFromDeleted(sw, ne);
         }
 
         var previousFocusedMarker = null;
@@ -645,6 +630,7 @@ define([
     };
 
     ctrl.$inject = [
+        'DeletedPlaceService',
         'FOUR_SQUARE_CLIENT',
         'FourSquareVenues',
         'FourSquareSearch',
