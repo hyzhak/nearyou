@@ -1,7 +1,7 @@
-define([], function() {
+define(['app/images/cacheGenerator'], function(cacheGenerator) {
     'use strict';
 
-    var ctrl = function(GoogleAnalytics, LocalImages, LocationStateService, INSTAGRAM_CLIENT_ID, SearchState, $document, $stateParams, $scope, $window) {
+    var ctrl = function(GoogleAnalytics, LocalImages, LocationStateService, ImagesService, INSTAGRAM_CLIENT_ID, SearchState, $document, $stateParams, $scope, $window) {
         SearchState.setState('local');
 
         var lat = $stateParams.lat,
@@ -27,6 +27,24 @@ define([], function() {
             distance: distance,
             max_timestamp: Math.round(Date.now() / 1000)
         });
+
+        $scope.$watch('instagramResult.data', function(value) {
+            if (!value) {
+                return;
+            }
+            value.forEach(function(image) {
+                var cache = cacheGenerator(image.location.latitude, image.location.longitude);
+                if (!ImagesService.getImage(cache)) {
+                    ImagesService.setImage(cache, buildImage(image.images.thumbnail.url));
+                }
+            });
+        });
+
+        function buildImage(url) {
+            return {
+                url: url
+            }
+        }
 
         $scope.hasRequested = false;
         $scope.requestMore = function(){
@@ -109,6 +127,7 @@ define([], function() {
         'GoogleAnalytics',
         'LocalImages',
         'LocationStateService',
+        'ImagesService',
         'INSTAGRAM_CLIENT_ID',
         'SearchState',
         '$document',
