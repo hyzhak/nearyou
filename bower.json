@@ -30,13 +30,12 @@
     "requirejs-text": "*",
     "require-css": "*",
     "almond": "*",
-    "angular-leaflet": "~0.6.1",
-    "leaflet-dist": "~0.7.0",
-    "angular-animate": "~1.2.3"
+    "leaflet-dist": "*",
+    "angular-animate": "*"
   },
   "devDependencies": {
-    "angular-mocks": "~1.2.1",
-    "jasmine-sinon": "~0.2.1",
-    "sinonjs": "~1.7.1"
+    "angular-mocks": "*",
+    "jasmine-sinon": "*",
+    "sinonjs": "*"
   }
 }
