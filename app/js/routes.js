@@ -4,12 +4,15 @@ define([
 
     'angular',
     'angular-ui-router',
+    'app/about/aboutDlg',
     'app/places/placesController'
 ], function(imagesListTemplate, placesTemplate, angular) {
     'use strict';
 
     angular.module('NY.routes', [
             'ui.router',
+
+            'NY.AboutDlg',
             'NY.PlacesCtrl'
         ])
         .config([

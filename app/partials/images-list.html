@@ -16,6 +16,12 @@
 
         /
 
+        <a ui-sref="places({lat: image.location.latitude, lng: image.location.longitude, zoom: 15})">
+          <i class="fa fa-map-marker"></i>
+        </a>
+
+        /
+
         <span ng-if="image.location.name">
           <a ui-sref="at-with-venue({lat: image.location.latitude, lng: image.location.longitude, distance: distance, place: image.location.name})">{{image.location.name}}</a>
         </span>
@@ -25,12 +31,6 @@
             <i>near</i>
           </a>
         </span>
-
-        /
-
-        <a ui-sref="places({lat: image.location.latitude, lng: image.location.longitude, zoom: 15})">
-          <i class="fa fa-map-marker"></i>
-        </a>
       </small>
     </div>
   </div>

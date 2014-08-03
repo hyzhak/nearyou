@@ -1,6 +1,6 @@
 define([
 ], function() {
-    var ctrl = function(GoogleAnalytics, $scope, SearchState){
+    var ctrl = function(AboutDlgService, GoogleAnalytics, $scope, SearchState){
 
         'use strict';
 
@@ -26,14 +26,11 @@ define([
             return condition?trueExpression:falseExpression;
         };
 
-        $scope.showAbout = function(){
-            /*$('#aboutWindow').modal('show');*/
+        $scope.openAbout = function() {
             GoogleAnalytics.trackPage('show-about');
-        };
-
-        $scope.hideAbout = function(){
-            /*$('#aboutWindow').modal('hide');*/
-            GoogleAnalytics.trackPage('hide-about');
+            AboutDlgService.open().then(function() {
+                GoogleAnalytics.trackPage('hide-about');
+            });
         };
 
         /*$('#aboutWindow').on('show', function (e) {
@@ -52,6 +49,7 @@ define([
     };
 
     ctrl.$inject = [
+        'AboutDlgService',
         'GoogleAnalytics',
         '$scope',
         'SearchState'
