@@ -34,7 +34,8 @@
     "leaflet.markerclusterer": "*",
     "require-css": "*",
     "requirejs": "*",
-    "requirejs-text": "*"
+    "requirejs-text": "*",
+    "lodash": "~2.4.1"
   },
   "devDependencies": {
     "angular-mocks": "*",

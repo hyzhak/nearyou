@@ -1,14 +1,12 @@
 define([
     'app/google/analytics',
     'app/gps/getCurrentPositionServer',
-    'app/main/locationStateService',
-    'app/images/images'
-], function(GoogleAnalytics, GetCurrentPositionServer, LocationStateService, ImagesService) {
+    'app/main/locationStateService'
+], function(GoogleAnalytics, GetCurrentPositionServer, LocationStateService) {
     'use strict';
     return {
         'GoogleAnalytics': GoogleAnalytics,
         'GetCurrentPositionServer': GetCurrentPositionServer,
-        'LocationStateService': LocationStateService,
-        'ImagesService': ImagesService
+        'LocationStateService': LocationStateService
     };
 });

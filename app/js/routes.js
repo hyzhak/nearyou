@@ -5,6 +5,7 @@ define([
     'angular',
     'angular-ui-router',
     'app/about/aboutDlg',
+    'app/near/localImagesController',
     'app/places/placesController'
 ], function(imagesListTemplate, placesTemplate, angular) {
     'use strict';
@@ -13,6 +14,7 @@ define([
             'ui.router',
 
             'NY.AboutDlg',
+            'NY.LocalImagesCtrl',
             'NY.PlacesCtrl'
         ])
         .config([
