@@ -9,8 +9,8 @@ define([
     'app/factories',
     'app/google/trackRequestToGoogleAnalytics',
     'app/services',
-    'text!partials/images-list.html',
-    'text!partials/places.html'
+
+    'app/routes'
 ], function(angular,
             resource,
             animate,
@@ -20,9 +20,7 @@ define([
             directives,
             factories,
             trackRequestToGoogleAnalytics,
-            services,
-            imagesListTemplate,
-            placesTemplate) {
+            services) {
     'use strict';
 
     // Declare app level module which depends on filters, and services
@@ -30,45 +28,16 @@ define([
         'ngResource',
         'ngAnimate',
         'leaflet-directive',
-        'ui.router'
+        'ui.router',
+
+        'NY.routes'
     ]);
 
     app.config([
         '$locationProvider',
         '$httpProvider',
-        '$stateProvider',
-        '$urlRouterProvider',
     function($locationProvider,
-             $httpProvider,
-             $stateProvider,
-             $urlRouterProvider) {
-
-        $locationProvider.html5Mode(false).hashPrefix('!');
-
-        $urlRouterProvider.otherwise('at');
-
-        $stateProvider
-            .state('at', {
-                url: '/at',
-                controller: 'RequestUserLocationCtrl',
-                template: imagesListTemplate
-            })
-            .state('at-with-location', {
-                url: '/at/?lat&lng&distance',
-                controller: 'LocalImagesCtrl',
-                template: imagesListTemplate
-            }).
-            state('at-with-venue', {
-                url: '/at/{place}/?lat&lng&distance',
-                controller: 'LocalImagesCtrl',
-                template: imagesListTemplate
-            }).
-            state('places', {
-                url: '/places/?lat&lng&distance',
-                controller: 'PlacesCtrl',
-                template: placesTemplate
-            });
-
+             $httpProvider) {
         /**
          * track API request to the Google Analytics
          */
