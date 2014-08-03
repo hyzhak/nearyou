@@ -1,30 +1,47 @@
 define([
+    'angular',
     'leaflet-markerclusterer',
     'css!lib/leaflet-dist/leaflet.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css'
-], function(LeafletMarkerCluster) {
+], function(angular) {
     'use strict';
 
-    var ctrl = function(DeletedPlaceService,
-                        FOUR_SQUARE_CLIENT,
-                        FourSquareVenues,
-                        FourSquareSearch,
-                        INSTAGRAM_CLIENT_ID,
-                        GoogleAnalytics,
-                        GoogleGeoCoding,
-                        ImagesService,
-                        LocationStateService,
-                        Locations,
-                        $rootScope,
-                        $scope,
-                        $timeout) {
+    angular.module('NY.PlacesCtrl', [])
+        .controller('PlacesCtrl',[
+            'DeletedPlaceService',
+
+            'FOUR_SQUARE_CLIENT',
+
+            'FourSquareVenues',
+            'FourSquareSearch',
+
+            'INSTAGRAM_CLIENT_ID',
+            'GoogleAnalytics',
+            'GoogleGeoCoding',
+            'ImagesService',
+            'LocationStateService',
+            'Locations',
+            '$rootScope',
+            '$scope',
+            '$timeout',
+            function(DeletedPlaceService,
+                    FOUR_SQUARE_CLIENT,
+                    FourSquareVenues,
+                    FourSquareSearch,
+                    INSTAGRAM_CLIENT_ID,
+                    GoogleAnalytics,
+                    GoogleGeoCoding,
+                    ImagesService,
+                    LocationStateService,
+                    Locations,
+                    $rootScope,
+                    $scope,
+                    $timeout) {
 
         var usedImages = [];
 
         LocationStateService.bounds = {};
-
-        console.log('LeafletMarkerCluster' + LeafletMarkerCluster);
 
         $scope.autoUpdate = true;
         $scope.center = {
@@ -616,23 +633,5 @@ define([
                 iconSize: new L.Point(40, 40)
             });
         }
-    };
-
-    ctrl.$inject = [
-        'DeletedPlaceService',
-        'FOUR_SQUARE_CLIENT',
-        'FourSquareVenues',
-        'FourSquareSearch',
-        'INSTAGRAM_CLIENT_ID',
-        'GoogleAnalytics',
-        'GoogleGeoCoding',
-        'ImagesService',
-        'LocationStateService',
-        'Locations',
-        '$rootScope',
-        '$scope',
-        '$timeout'
-    ];
-
-    return ctrl;
+    }]);
 });

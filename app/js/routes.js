@@ -3,11 +3,15 @@ define([
     'text!partials/places.html',
 
     'angular',
-    'angular-ui-router'
+    'angular-ui-router',
+    'app/places/placesController'
 ], function(imagesListTemplate, placesTemplate, angular) {
     'use strict';
 
-    angular.module('NY.routes', ['ui.router'])
+    angular.module('NY.routes', [
+            'ui.router',
+            'NY.PlacesCtrl'
+        ])
         .config([
             '$locationProvider',
             '$stateProvider',
