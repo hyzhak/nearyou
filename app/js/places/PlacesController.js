@@ -3,13 +3,17 @@ define([
     'leaflet-markerclusterer',
     'css!lib/leaflet-dist/leaflet.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.css',
-    'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css'
+    'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css',
+
+    './deletedPlacesService'
 ], function(angular) {
     'use strict';
 
-    angular.module('NY.PlacesCtrl', [])
+    angular.module('NY.PlacesCtrl', [
+            'NY.DeletedPlacesService'
+        ])
         .controller('PlacesCtrl',[
-            'DeletedPlaceService',
+            'DeletedPlacesService',
 
             'FOUR_SQUARE_CLIENT',
 
@@ -26,7 +30,7 @@ define([
             '$scope',
             '$stateParams',
             '$timeout',
-            function(DeletedPlaceService,
+            function(DeletedPlacesService,
                     FOUR_SQUARE_CLIENT,
                     FourSquareVenues,
                     FourSquareSearch,
@@ -482,7 +486,7 @@ define([
                 usedImages.splice(index, 1);
             }
 
-            DeletedPlaceService.addToDeleted(marker);
+            DeletedPlacesService.addToDeleted(marker);
 
             delete $scope.markers[id];
         }
@@ -550,7 +554,7 @@ define([
 
             //localVenues = null;
 
-            DeletedPlaceService.fetchVenuesFromDeleted(sw, ne, function(marker) {
+            DeletedPlacesService.fetchVenuesFromDeleted(sw, ne, function(marker) {
                 $scope.markers[marker.id] = marker;
             });
 
