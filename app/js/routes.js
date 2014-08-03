@@ -1,6 +1,6 @@
 define([
     'text!partials/images-list.html',
-    'text!partials/places.html',
+    'text!app/places/places.html',
 
     'angular',
     'angular-ui-router',
