@@ -9,6 +9,7 @@ requirejs({
         'normalize': 'lib/require-css/normalize',
         'angular': 'lib/angular/angular',
         'angular-animate': 'lib/angular-animate/angular-animate',
+        'angular-bootstrap': 'lib/angular-bootstrap/ui-bootstrap-tpls',
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
         'leaflet': 'lib/leaflet-dist/leaflet',
@@ -24,6 +25,9 @@ requirejs({
             exports: 'angular-hammer'
         },
         'angular-animate': {
+            deps: ['angular']
+        },
+        'angular-bootstrap': {
             deps: ['angular']
         },
         'angular-resource': {

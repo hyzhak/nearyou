@@ -63,8 +63,8 @@ define([
                     images: {
                         name: 'images',
                         type: 'markercluster',
-                        visible: true
-                        ,layerOptions: {
+                        visible: true,
+                        layerOptions: {
                             iconCreateFunction: iconCreateFunction
                         }
                     }
@@ -106,32 +106,18 @@ define([
             };
         }
 
-        $scope.events = {
-            zoomend: function(e) {
-                updateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
-                trackCenterToGoogleAnalytics();
-                if ($scope.autoUpdate) {
-                    hideInvisibleMarkers();
-                }
-            },
-            dragend: function(e) {
-                updateBounds(e.target.getBounds().getSouthWest(), e.target.getBounds().getNorthEast());
-                trackCenterToGoogleAnalytics();
-                if ($scope.autoUpdate) {
-                    hideInvisibleMarkers();
-                }
-            },
-            moveend: function(e) {
-//                if (needInitialize) {
-//                    var sw = e.target.getBounds().getSouthWest(),
-//                        ne = e.target.getBounds().getNorthEast();
-//                    lazyUpdateBounds(sw, ne);
-//                    LocationService.setLocation(0.5 * (sw.lat + ne.lat), 0.5 * (sw.lng + ne.lng), $scope.center.zoom);
-//
-//                    needInitialize = false;
-//                }
+        function mapChangeHandler(event, e) {
+            var bounds = e.leafletEvent.target.getBounds();
+            updateBounds(bounds.getSouthWest(), bounds.getNorthEast());
+            trackCenterToGoogleAnalytics();
+            if ($scope.autoUpdate) {
+                hideInvisibleMarkers();
             }
-        };
+        }
+
+        $scope.$on('leafletDirectiveMap.zoomend', mapChangeHandler);
+
+        $scope.$on('leafletDirectiveMap.dragend', mapChangeHandler);
 
         $scope.$on('leafletDirectiveMarkersClick', function(e, id) {
             var marker = $scope.markers[id];
@@ -379,6 +365,9 @@ define([
          */
         function fetchVenuesFromFourSquare() {
             var bounds = LocationStateService.bounds;
+            if (!bounds.sw || !bounds.ne) {
+                return;
+            }
             FourSquareVenues.get({
                 sw: bounds.sw.lat + ', ' + bounds.sw.lng,
                 ne: bounds.ne.lat + ', ' + bounds.ne.lng,

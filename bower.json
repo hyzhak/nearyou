@@ -24,6 +24,8 @@
     "almond": "*",
     "angular": "*",
     "angular-animate": "*",
+    "angular-bootstrap": "~0.11.0",
+    "angular-leaflet": "~0.7.7",
     "angular-resource": "*",
     "angular-route": "*",
     "angular-ui-router": "*",
