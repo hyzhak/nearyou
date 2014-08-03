@@ -1,6 +1,7 @@
 temp
 dist
 node_modules
+/app/lib
 /.idea
 /*.iml
 *.colt

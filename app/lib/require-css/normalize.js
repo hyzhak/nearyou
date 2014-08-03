@@ -1,3 +1,4 @@
+//>>excludeStart('excludeRequireCss', pragmas.excludeRequireCss)
 /*
  * css.normalize.js
  *
@@ -40,9 +41,10 @@ define(function() {
   }
 
   // given a relative URI, and two absolute base URIs, convert it from one base to another
-  var protocolRegEx = /[^\:\/]*:\/\/([^\/])*/
+  var protocolRegEx = /[^\:\/]*:\/\/([^\/])*/;
+  var absUrlRegEx = /^(\/|data:)/;
   function convertURIBase(uri, fromBase, toBase) {
-    if(uri.indexOf("data:") === 0)
+    if (uri.match(absUrlRegEx) || uri.match(protocolRegEx))
       return uri;
     uri = removeDoubleSlashes(uri);
     // if toBase specifies a protocol path, ensure this is the same protocol as fromBase, if not
@@ -63,7 +65,7 @@ define(function() {
       uri = uri.substr(2);
 
     // absolute urls are left in tact
-    if (uri.match(/^\//) || uri.match(protocolRegEx))
+    if (uri.match(absUrlRegEx) || uri.match(protocolRegEx))
       return uri;
     
     var baseParts = base.split('/');
@@ -136,3 +138,4 @@ define(function() {
   
   return normalizeCSS;
 });
+//>>excludeEnd('excludeRequireCss')

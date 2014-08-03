@@ -1,6 +1,6 @@
 /*
  * Require-CSS RequireJS css! loader plugin
- * 0.0.8
+ * 0.1.2
  * Guy Bedford 2013
  * MIT
  */
@@ -31,6 +31,7 @@
  */
 
 define(function() {
+//>>excludeStart('excludeRequireCss', pragmas.excludeRequireCss)
   if (typeof window == 'undefined')
     return { load: function(n, r, load){ load() } };
 
@@ -54,26 +55,59 @@ define(function() {
   else if (engine[4])
     useImportLoad = parseInt(engine[4]) < 18;
   
+//>>excludeEnd('excludeRequireCss')
   //main api object
   var cssAPI = {};
-  
+
+//>>excludeStart('excludeRequireCss', pragmas.excludeRequireCss)
   cssAPI.pluginBuilder = './css-builder';
 
   // <style> @import load method
-  var curStyle;
+  var curStyle, curSheet;
   var createStyle = function () {
     curStyle = document.createElement('style');
     head.appendChild(curStyle);
+    curSheet = curStyle.styleSheet || curStyle.sheet;
+  }
+  var ieCnt = 0;
+  var ieLoads = [];
+  var ieCurCallback;
+  
+  var createIeLoad = function(url) {
+    ieCnt++;
+    if (ieCnt == 32) {
+      createStyle();
+      ieCnt = 0;
+    }
+    curSheet.addImport(url);
+    curStyle.onload = function(){ processIeLoad() };
+  }
+  var processIeLoad = function() {
+    ieCurCallback();
+ 
+    var nextLoad = ieLoads.shift();
+ 
+    if (!nextLoad) {
+      ieCurCallback = null;
+      return;
+    }
+ 
+    ieCurCallback = nextLoad[1];
+    createIeLoad(nextLoad[0]);
   }
   var importLoad = function(url, callback) {
-    createStyle();
-
-    var curSheet = curStyle.styleSheet || curStyle.sheet;
+    if (!curSheet || !curSheet.addImport)
+      createStyle();
 
     if (curSheet && curSheet.addImport) {
       // old IE
-      curSheet.addImport(url);
-      curStyle.onload = callback;
+      if (ieCurCallback) {
+        ieLoads.push([url, callback]);
+      }
+      else {
+        createIeLoad(url);
+        ieCurCallback = callback;
+      }
     }
     else {
       // old Firefox
@@ -114,18 +148,21 @@ define(function() {
     head.appendChild(link);
   }
 
+//>>excludeEnd('excludeRequireCss')
   cssAPI.normalize = function(name, normalize) {
     if (name.substr(name.length - 4, 4) == '.css')
       name = name.substr(0, name.length - 4);
-    
+
     return normalize(name);
   }
-  
+
+//>>excludeStart('excludeRequireCss', pragmas.excludeRequireCss)
   cssAPI.load = function(cssId, req, load, config) {
 
     (useImportLoad ? importLoad : linkLoad)(req.toUrl(cssId + '.css'), load);
 
   }
 
+//>>excludeEnd('excludeRequireCss')
   return cssAPI;
 });

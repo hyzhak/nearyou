@@ -1,12 +1,17 @@
 {
   "name": "almond",
+  "version": "0.2.9",
+  "main": "almond.js",
+  "ignore": [
+    "tests",
+    "shrinktest.sh"
+  ],
   "homepage": "https://github.com/jrburke/almond",
-  "version": "0.2.7",
-  "_release": "0.2.7",
+  "_release": "0.2.9",
   "_resolution": {
     "type": "version",
-    "tag": "0.2.7",
-    "commit": "313f32cef7aa3dd32c6d16a7590e45003ae978a5"
+    "tag": "0.2.9",
+    "commit": "a416b0c7ed69cdd01e1dfd89107d0873ee577d45"
   },
   "_source": "git://github.com/jrburke/almond.git",
   "_target": "*",

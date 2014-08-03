@@ -1,15 +1,22 @@
 {
-  "name": "angular-leaflet",
+  "name": "angular-leaflet-directive-testing-libraries",
+  "dependencies": {
+    "angular": "1.2.2",
+    "angular-route": "1.2.2",
+    "angular-animate": "1.2.2",
+    "angular-mocks": "1.2.2",
+    "leaflet-dist": "0.7",
+    "leaflet.markerclusterer": "0.2"
+  },
   "homepage": "https://github.com/tombatossals/angular-leaflet-directive",
-  "version": "0.6.1",
-  "_release": "0.6.1",
+  "version": "0.6.2",
+  "_release": "0.6.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.6.1",
-    "commit": "53ae8c5b5fa43d9ff7884da459e10d61f7391f0a"
+    "tag": "v0.6.2",
+    "commit": "b44a6b22816a0a8a391201f3e8baea80fd9655cc"
   },
   "_source": "git://github.com/tombatossals/angular-leaflet-directive.git",
   "_target": "~0.6.1",
-  "_originalSource": "angular-leaflet",
-  "_direct": true
+  "_originalSource": "angular-leaflet"
 }
