@@ -21,18 +21,18 @@
     "tests"
   ],
   "dependencies": {
+    "almond": "*",
     "angular": "*",
-    "angular-ui-router": "*",
-    "bootstrap": "*",
+    "angular-animate": "*",
     "angular-resource": "*",
     "angular-route": "*",
-    "requirejs": "*",
-    "requirejs-text": "*",
-    "require-css": "*",
-    "almond": "*",
+    "angular-ui-router": "*",
+    "bootstrap": "*",
     "leaflet-dist": "*",
-    "angular-animate": "*",
-    "leaflet.markerclusterer": "*"
+    "leaflet.markerclusterer": "*",
+    "require-css": "*",
+    "requirejs": "*",
+    "requirejs-text": "*"
   },
   "devDependencies": {
     "angular-mocks": "*",
