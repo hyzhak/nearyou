@@ -24,6 +24,7 @@ define([
             'Locations',
             '$rootScope',
             '$scope',
+            '$stateParams',
             '$timeout',
             function(DeletedPlaceService,
                     FOUR_SQUARE_CLIENT,
@@ -37,6 +38,7 @@ define([
                     Locations,
                     $rootScope,
                     $scope,
+                    $stateParams,
                     $timeout) {
 
         var usedImages = [];
@@ -45,9 +47,9 @@ define([
 
         $scope.autoUpdate = true;
         $scope.center = {
-            lat: LocationStateService.lat,
-            lng: LocationStateService.lng,
-            zoom: 14
+            lat: $stateParams.lat?Number($stateParams.lat):LocationStateService.lat,
+            lng: $stateParams.lng?Number($stateParams.lng):LocationStateService.lng,
+            zoom: $stateParams.zoom?Number($stateParams.zoom):14
         };
 
         angular.extend($scope, {

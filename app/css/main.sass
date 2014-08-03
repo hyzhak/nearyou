@@ -88,14 +88,27 @@ $insta-images-size: 612
 
 //TODO : add media queries
 .instagram-image
-  margin: 0 auto
-  width: $insta-images-size + px
-  height: $insta-images-size + px
+  //margin: 0 auto
+  //width: $insta-images-size + px
+  //height: $insta-images-size + px
+
+  background: black
+  max-height: $insta-images-size + px
+
+  display: table-cell
+  vertical-align: middle
+
+  & img
+    max-width: 100%
+    max-height: $insta-images-size + px
+    width: auto
+    height: auto
+    display: table
+    margin: 0 auto
 
 .instagram-caption
   margin: 0 auto
   vertical-align: middle
-  width: $insta-images-size + px
   height: 32px
   font:
     size: 20px

@@ -40,7 +40,7 @@ define([
                         template: imagesListTemplate
                     }).
                     state('places', {
-                        url: '/places/?lat&lng&distance',
+                        url: '/places/?lat&lng&distance&zoom',
                         controller: 'PlacesCtrl',
                         template: placesTemplate
                     });

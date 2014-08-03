@@ -1,21 +1,37 @@
-<div class="instagram-images-list">
-    <div ng-repeat="image in instagramResult.data">
-      <div class="instagram-image">
-        <a target="_blank" href="{{image.link}}">
-            <img ng-src="{{image.images.standard_resolution.url}}" width="612" height="612" alt="{{image.caption.text}}" class="img-polaroid"/>
-        </a>
-      </div>
-      <div class="instagram-caption">
-        <span><a href ng-click="like(image)">{{image.likes.count}} Likes</a></span>
-        <span>by <a ng-href="http://instagram.com/{{image.user.username}}" target="_blank">{{image.user.username}}</a></span>
+<div class="instagram-images-list"
+     class="row">
+  <div ng-repeat="image in instagramResult.data"
+       class="col-sm-6 col-md-4 col-lg-3">
+    <div class="instagram-image">
+      <a target="_blank" href="{{image.link}}">
+        <img ng-src="{{image.images.standard_resolution.url}}" width="612" height="612" alt="{{image.caption.text}}"
+             class="img-polaroid"/>
+      </a>
+    </div>
+    <div class="instagram-caption">
+      <small>
+        <a href ng-click="like(image)">{{image.likes.count}} <i class="fa fa-heart"></i></a>
+        <span>by <a ng-href="http://instagram.com/{{image.user.username}}"
+                    target="_blank">{{image.user.username}}</a></span>
+
+        /
+
         <span ng-if="image.location.name">
           <a ui-sref="at-with-venue({lat: image.location.latitude, lng: image.location.longitude, distance: distance, place: image.location.name})">{{image.location.name}}</a>
         </span>
         <span ng-if="!image.location.name">
-          <a ui-sref="at-with-location({lat: image.location.latitude, lng: image.location.longitude})" ng-click="relocate(image.location)">
+          <a ui-sref="at-with-location({lat: image.location.latitude, lng: image.location.longitude})"
+             ng-click="relocate(image.location)">
             <i>near</i>
           </a>
         </span>
-      </div>
+
+        /
+
+        <a ui-sref="places({lat: image.location.latitude, lng: image.location.longitude, zoom: 15})">
+          <i class="fa fa-map-marker"></i>
+        </a>
+      </small>
     </div>
+  </div>
 </div>
