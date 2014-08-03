@@ -61,13 +61,7 @@
           <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">Search</a>
         </li>
         <li ng-class="{ active: $state.includes('about')}">
-          <a href="https://github.com/hyzhak/nearyou" target="_blank">About...</a>
-        </li>
-        <li class="fb-bottom-like">
-          <fb-like href="https://www.facebook.com/photosnearyou"
-                   width="180"
-                   layout="standard"
-                   faces="true"/>
+          <a href ng-click="openAbout()">About...</a>
         </li>
       </ul>
     </footer>
