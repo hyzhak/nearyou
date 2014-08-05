@@ -46,31 +46,6 @@ define([
                         $scope.images = images;
                     });
 
-                $scope.$watch('instagramResult.data', function (value) {
-                    if (!value) {
-                        return;
-                    }
-                    value.forEach(function (image) {
-                        var cache = cacheGenerator(image.location.latitude, image.location.longitude);
-                        if (!ImagesService.getImage(cache)) {
-                            ImagesService.setImage(cache, buildImage(image.images.thumbnail.url));
-                        }
-
-                        ImagesService.addImage(
-                            image.location.latitude,
-                            image.location.longitude,
-                            image.location.name,
-                            image.images.thumbnail.url
-                        );
-                    });
-                });
-
-                function buildImage(url) {
-                    return {
-                        url: url
-                    }
-                }
-
                 $scope.hasRequested = false;
                 $scope.requestMore = function () {
                     var from;
@@ -88,7 +63,6 @@ define([
                     InstagramImages
                         .queryByLocation(lat, lng, distance, from)
                         .then(function(images) {
-                            $scope.images = images;
                             $scope.hasRequested = false;
                             mergeImageCollections($scope.images, images);
                         });

@@ -1,10 +1,13 @@
 define([
-    'angular'
+    'angular',
+    'app/images/images'
 ], function(angular) {
-
     'use strict';
-    angular.module('Instagram', [])
-        .service('InstagramImages', ['INSTAGRAM_CLIENT_ID', '$http', function(INSTAGRAM_CLIENT_ID, $http) {
+
+    angular.module('Instagram', [
+            'NY.ImagesService'
+        ])
+        .service('InstagramImages', ['ImagesService', 'INSTAGRAM_CLIENT_ID', '$http', function(ImagesService, INSTAGRAM_CLIENT_ID, $http) {
             var self = this;
             /**
              *
@@ -28,7 +31,17 @@ define([
                     }
                 )
                     .then(function(result) {
-                        return result.data.data;
+                        var images = result.data.data;
+                        angular.forEach(images, function(image) {
+                            ImagesService.addImage(
+                                image.location.latitude,
+                                image.location.longitude,
+                                image.location.name,
+                                image.images.thumbnail.url
+                            );
+                        });
+
+                        return images;
                     });
             };
         }]);

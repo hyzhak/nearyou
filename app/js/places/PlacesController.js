@@ -1,5 +1,7 @@
 define([
     'angular',
+    'lodash',
+
     'leaflet-markerclusterer',
     'css!lib/leaflet-dist/leaflet.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.css',
@@ -7,12 +9,13 @@ define([
 
     'app/images/images',
     './deletedPlacesService'
-], function (angular) {
+], function (angular, _) {
     'use strict';
 
     var DEFAULT_DISTANCE = 5000;
 
     angular.module('NY.PlacesCtrl', [
+            'Instagram',
             'NY.DeletedPlacesService',
             'NY.ImagesService'
         ])
@@ -79,6 +82,7 @@ define([
                                 type: 'markercluster',
                                 visible: true,
                                 layerOptions: {
+                                    singleMarkerMode: true,
                                     iconCreateFunction: iconCreateFunction
                                 }
                             }
@@ -90,6 +94,7 @@ define([
                 });
 
                 $scope.markers = {};
+                $scope.markersByLocation = {};
 
                 $scope.selected = null;
 
@@ -112,22 +117,20 @@ define([
                     }
                     currentSelectedMarker = marker;
                     $scope.selected = marker;
-                    $scope.paths[currentSelectedMarker.id] = {
+
+                    /*$scope.paths[currentSelectedMarker.id] = {
                         weight: 2,
                         color: '#ff612f',
                         latlngs: marker,
                         radius: LocationStateService.distance || DEFAULT_DISTANCE,
                         type: 'circle'
-                    };
+                    };*/
                 }
 
                 function mapChangeHandler(event, e) {
                     var bounds = e.leafletEvent.target.getBounds();
                     updateBounds(bounds.getSouthWest(), bounds.getNorthEast());
                     trackCenterToGoogleAnalytics();
-                    if ($scope.autoUpdate) {
-                        hideInvisibleMarkers();
-                    }
                 }
 
                 $scope.$on('leafletDirectiveMap.zoomend', mapChangeHandler);
@@ -196,7 +199,6 @@ define([
                     return encodeURIComponent(value);
                 };
 
-                fetchVenuesFromInstagram();
                 trackCenterToGoogleAnalytics();
 
                 /**
@@ -304,14 +306,10 @@ define([
                  *
                  * @private
                  * @param venue
-                 * @returns {{id: *, lat: *, lng: *, message: (*|Function|name|oldmodule.name|name|oldmodule.name|name|person.name|employee.name|application.name|d.name|e.name|d.name|e.name|window.A.name|B.name|C.name|e.nested.e.name|name|name|name|app|test.name|app|test2.name|str.user.name|.meta.name|body.name|string|name|string|c1.name|c1|sub.name|c.name|c|sub.name|c2.name|c2|sub.name|c1.name|c1|sub.name|c.name|c|sub.name|c2.name|c2|sub.name|FirefoxBrowser.name|.shim.e.init.name|.shim.f.init.name|name|string|subwidget.name|plug|c1.name|plug|main.name|plug|c2.name|plug|c1.name|plug|main.name|plug|c2.name|name|c1.name|c1|sub.name|another|minor.name|another|c.name|another|c|dim.name|another|c|sub.name|c2.name|c1.name|c1|sub.name|another|minor.name|another|c.name|another|c|dim.name|another|c|sub.name|c2.name|.requirejs.compile.options.name|.requirejs.template.options.name|.requirejs.onOptimize.options.name|OperaBrowser.name|name|spec.name|a.name|c.name|b.name|prime|a.name|prime|c.name|prime|b.name|name|.test_vars.name|string|$RouteProvider.when.name|name|name|string|tasks.name|tasks.name|window.A.name|B.name|C.name|e.nested.e.name|fn.name|FCAP.name|.shim.e.init.name|.shim.f.init.name|body.name|name|.error.name|str_identities.obj.user.name|name|name|createHAR.log.creator.name|string|name|name|.Scope.variables.name|name|.Scope.variables.name|name|encodingFamilies.convert.name|name|string|createHAR.log.creator.name|buildRule.name|buildRule.name|string|encodings.name|name|encodings.name|.user.name|.existing.fcbaebfecc.name|name|name|string|Browser.serialize.name|name|encodings.name|name|name|*|name|string|name|name|name|string|name|name|curly.name|moe.name|name|name|name|name|name|curly.name|moe.name|name|name|name|subwidget.name|string|string|string|h.name|name|name|root.name|name|name|.done.name|string|string|name|one.name|two.name|*|name|name|name|name|name|.film.name|name|.film.name|name|name|name|String|Null|name|.DOMAttrs.name|name|.DOMAttrs.name|.c.name|.d.name|string|string|string|name|string|string|name|string|name|Function|Function|Function|Function|Function|name|test.name|.DOMAttrs.name|angular.mock.TzDate.name|root.name|name|$RouteProvider.when.name|angular.mock.TzDate.name|angular.mock.TzDate.name|name|.serializeArray.name|name|.Operation.eval.name|angular.mock.TzDate.name|.DOMAttrs.name|window.angular.mock.TzDate.name|name|name|string|string|string|string|string|string|string|string|string|string|string|string|string|string|name|name|newContext.makeModuleMap.name|name|newContext.makeModuleMap.name|name|.serializeArray.name|Function|Function|Function|Function|Function|name|name|.serializeArray.name|name|name|name|name|string|string|string|string|string|$rootScope.layers.baselayers.osm.name|$rootScope.layers.baselayers.cycle.name|$rootScope.layers.baselayers.osmwms.name|$rootScope.layers.baselayers.osm2.name|$rootScope.layers.baselayers.osm3.name|$rootScope.layers.baselayers.osm4.name|$rootScope.layers.baselayers.osm5.name|$rootScope.layers.baselayers.osm6.name|$rootScope.layers.baselayers.cloudmade1.name|$rootScope.layers.overlays.hillshade.name|$rootScope.layers.overlays.fire.name|$rootScope.layers.overlays.cars.name|$rootScope.layers.overlays.trucks.name|.baselayers.osm.name|.overlays.cars.name|.overlays.trucks.name|name|String|String|Null|String|o.Control.Layers._addLayer.name|parseObjectPropertyKey.name|parsePrimaryExpression.name|parseNonComputedProperty.name|parseVariableIdentifier.name|o.Control.Layers._addLayer.name|name|Function|JSHINT.quit.name|name|jQuery.serializeArray.name|jQuery.serializeArray.name|name|jQuery.serializeArray.name|name|jQuery.serializeArray.name|i.Control.Layers._addLayer.name|w.name|name|*|name|*|name|*|name|testFixture.expression.left.name|testFixture.expression.right.key.name|testFixture.expression.right.value.body.argument.name|testFixture.expression.right.value.name|testFixture.expression.right.value.body.expression.left.name|testFixture.expression.right.value.body.expression.right.name|testFixture.Comments.test.name|testFixture.Comments.consequent.expression.callee.name|testFixture.Comments.discriminant.name|testFixture.Comments.expression.callee.name|testFixture.id.name|testFixture.expression.callee.name|testFixture.expression.callee.callee.name|testFixture.expression.callee.object.callee.name|testFixture.expression.callee.property.name|testFixture.expression.callee.object.name|testFixture.expression.name|testFixture.expression.object.name|testFixture.expression.property.name|testFixture.expression.object.object.name|testFixture.expression.object.property.name|testFixture.expression.object.object.object.name|testFixture.expression.object.object.property.name|testFixture.expression.object.callee.name|testFixture.expression.object.callee.object.callee.name|testFixture.expression.object.callee.property.name|testFixture.expression.callee.object.object.object.name|testFixture.expression.callee.object.object.property.name|testFixture.expression.callee.object.property.name|testFixture.expression.argument.name|testFixture.expression.right.name|testFixture.expression.left.left.name|testFixture.expression.left.right.name|testFixture.expression.right.left.name|testFixture.expression.right.right.name|testFixture.expression.test.name|testFixture.expression.test.left.name|testFixture.expression.test.right.name|testFixture.Block.expression.name|testFixture.Block.expression.callee.name|testFixture.x.expression.name|testFixture.test.name|testFixture.consequent.expression.callee.name|testFixture.consequent.id.name|testFixture.alternate.expression.callee.name|testFixture.body.expression.callee.name|testFixture.body.expression.argument.name|testFixture.test.left.name|testFixture.init.left.name|testFixture.init.id.name|testFixture.update.argument.name|testFixture.body.expression.name|testFixture.left.name|testFixture.right.name|testFixture.left.id.name|testFixture.label.name|testFixture.body.body.label.name|testFixture.expression.body.argument.name|testFixture.expression.body.argument.left.name|testFixture.expression.body.argument.right.name|testFixture.object.name|testFixture.body.expression.left.name|testFixture.body.expression.right.name|testFixture.discriminant.name|testFixture.argument.name|testFixture.argument.left.name|testFixture.argument.right.name|testFixture.argument.key.name|testFixture.param.name|testFixture.finalizer.expression.callee.name|testFixture.finalizer.expression.name|testFixture.block.expression.callee.name|testFixture.name|testFixture.expression.id.name|testFixture.body.id.name|testFixture.init.body.expression.callee.name|testFixture.expression.body.expression.name|testFixture.API.result.expression.name|testFixture.expression.callee.body.object.name|testFixture.init.key.name|testFixture.init.value.name|testFixture.expression.key.name|testFixture.expression.left.callee.name|*|name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|jQuery.serializeArray.name|errorObj.name|name|newContext.makeModuleMap.name|name|loadLib.parseObjectPropertyKey.name|loadLib.parsePrimaryExpression.name|loadLib.parseNonComputedProperty.name|loadLib.parseVariableIdentifier.name|Function|*|Function|Function|Function|Function|Function|SourceMapConsumer.originalPositionFor.name|SourceMapConsumer.eachMapping.name|AST_ForIn.$propdoc.name|AST_Lambda.$propdoc.name|AST_VarDef.$propdoc.name|AST_Symbol.$propdoc.name|sym.name|ref.name|config.modules.name|.onCompleteData.name|name|name|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|two.name|one.name|exports.name|string|string|string|string|string|name|string|string|HiredisReplyParser.name|Mark.name|string|ScriptBrowser.name|string|name|TRBL.name|packet.name|SocketNamespace.name|Flag.name|Browser.name|packet.name|string|string|string|string|SocketNamespace.name|string|FileException.name|Task._tasks.name|string|RedisReplyParser.name|.XMLFragment.name|name|name|$2.name|$2.name|Test.name|Test.name|Command.name|name|name|string|string|Test.name|Test.name|TRBL.name|name|name|name|ZipObject.name|NodeWithToken.name|name|Test.name|Dog.name|.Access.name|Class.ctor.name|Assign.value.name|.Param.name|.Splat.name|.For.name|.Access.name|Class.ctor.name|Assign.value.name|.Param.name|.Splat.name|.For.name|x.expr.attrHandle.name|name|packet.name|SocketNamespace.name|Flag.name|string|$$.name|$$.name|Benchmark.name|Suite.name|TRBL.name|sinon.throwsException.exception.name|string|name|jQuery.attrHooks.name|name|name|name|name|name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|errorObject.name|loadLib.NodeWithToken.name|name|newMapping.name|loadLib.SourceNode.name|loadLib.SymbolDef.name|args.value.name), title: (*|Function|name|oldmodule.name|name|oldmodule.name|name|person.name|employee.name|application.name|d.name|e.name|d.name|e.name|window.A.name|B.name|C.name|e.nested.e.name|name|name|name|app|test.name|app|test2.name|str.user.name|.meta.name|body.name|string|name|string|c1.name|c1|sub.name|c.name|c|sub.name|c2.name|c2|sub.name|c1.name|c1|sub.name|c.name|c|sub.name|c2.name|c2|sub.name|FirefoxBrowser.name|.shim.e.init.name|.shim.f.init.name|name|string|subwidget.name|plug|c1.name|plug|main.name|plug|c2.name|plug|c1.name|plug|main.name|plug|c2.name|name|c1.name|c1|sub.name|another|minor.name|another|c.name|another|c|dim.name|another|c|sub.name|c2.name|c1.name|c1|sub.name|another|minor.name|another|c.name|another|c|dim.name|another|c|sub.name|c2.name|.requirejs.compile.options.name|.requirejs.template.options.name|.requirejs.onOptimize.options.name|OperaBrowser.name|name|spec.name|a.name|c.name|b.name|prime|a.name|prime|c.name|prime|b.name|name|.test_vars.name|string|$RouteProvider.when.name|name|name|string|tasks.name|tasks.name|window.A.name|B.name|C.name|e.nested.e.name|fn.name|FCAP.name|.shim.e.init.name|.shim.f.init.name|body.name|name|.error.name|str_identities.obj.user.name|name|name|createHAR.log.creator.name|string|name|name|.Scope.variables.name|name|.Scope.variables.name|name|encodingFamilies.convert.name|name|string|createHAR.log.creator.name|buildRule.name|buildRule.name|string|encodings.name|name|encodings.name|.user.name|.existing.fcbaebfecc.name|name|name|string|Browser.serialize.name|name|encodings.name|name|name|*|name|string|name|name|name|string|name|name|curly.name|moe.name|name|name|name|name|name|curly.name|moe.name|name|name|name|subwidget.name|string|string|string|h.name|name|name|root.name|name|name|.done.name|string|string|name|one.name|two.name|*|name|name|name|name|name|.film.name|name|.film.name|name|name|name|String|Null|name|.DOMAttrs.name|name|.DOMAttrs.name|.c.name|.d.name|string|string|string|name|string|string|name|string|name|Function|Function|Function|Function|Function|name|test.name|.DOMAttrs.name|angular.mock.TzDate.name|root.name|name|$RouteProvider.when.name|angular.mock.TzDate.name|angular.mock.TzDate.name|name|.serializeArray.name|name|.Operation.eval.name|angular.mock.TzDate.name|.DOMAttrs.name|window.angular.mock.TzDate.name|name|name|string|string|string|string|string|string|string|string|string|string|string|string|string|string|name|name|newContext.makeModuleMap.name|name|newContext.makeModuleMap.name|name|.serializeArray.name|Function|Function|Function|Function|Function|name|name|.serializeArray.name|name|name|name|name|string|string|string|string|string|$rootScope.layers.baselayers.osm.name|$rootScope.layers.baselayers.cycle.name|$rootScope.layers.baselayers.osmwms.name|$rootScope.layers.baselayers.osm2.name|$rootScope.layers.baselayers.osm3.name|$rootScope.layers.baselayers.osm4.name|$rootScope.layers.baselayers.osm5.name|$rootScope.layers.baselayers.osm6.name|$rootScope.layers.baselayers.cloudmade1.name|$rootScope.layers.overlays.hillshade.name|$rootScope.layers.overlays.fire.name|$rootScope.layers.overlays.cars.name|$rootScope.layers.overlays.trucks.name|.baselayers.osm.name|.overlays.cars.name|.overlays.trucks.name|name|String|String|Null|String|o.Control.Layers._addLayer.name|parseObjectPropertyKey.name|parsePrimaryExpression.name|parseNonComputedProperty.name|parseVariableIdentifier.name|o.Control.Layers._addLayer.name|name|Function|JSHINT.quit.name|name|jQuery.serializeArray.name|jQuery.serializeArray.name|name|jQuery.serializeArray.name|name|jQuery.serializeArray.name|i.Control.Layers._addLayer.name|w.name|name|*|name|*|name|*|name|testFixture.expression.left.name|testFixture.expression.right.key.name|testFixture.expression.right.value.body.argument.name|testFixture.expression.right.value.name|testFixture.expression.right.value.body.expression.left.name|testFixture.expression.right.value.body.expression.right.name|testFixture.Comments.test.name|testFixture.Comments.consequent.expression.callee.name|testFixture.Comments.discriminant.name|testFixture.Comments.expression.callee.name|testFixture.id.name|testFixture.expression.callee.name|testFixture.expression.callee.callee.name|testFixture.expression.callee.object.callee.name|testFixture.expression.callee.property.name|testFixture.expression.callee.object.name|testFixture.expression.name|testFixture.expression.object.name|testFixture.expression.property.name|testFixture.expression.object.object.name|testFixture.expression.object.property.name|testFixture.expression.object.object.object.name|testFixture.expression.object.object.property.name|testFixture.expression.object.callee.name|testFixture.expression.object.callee.object.callee.name|testFixture.expression.object.callee.property.name|testFixture.expression.callee.object.object.object.name|testFixture.expression.callee.object.object.property.name|testFixture.expression.callee.object.property.name|testFixture.expression.argument.name|testFixture.expression.right.name|testFixture.expression.left.left.name|testFixture.expression.left.right.name|testFixture.expression.right.left.name|testFixture.expression.right.right.name|testFixture.expression.test.name|testFixture.expression.test.left.name|testFixture.expression.test.right.name|testFixture.Block.expression.name|testFixture.Block.expression.callee.name|testFixture.x.expression.name|testFixture.test.name|testFixture.consequent.expression.callee.name|testFixture.consequent.id.name|testFixture.alternate.expression.callee.name|testFixture.body.expression.callee.name|testFixture.body.expression.argument.name|testFixture.test.left.name|testFixture.init.left.name|testFixture.init.id.name|testFixture.update.argument.name|testFixture.body.expression.name|testFixture.left.name|testFixture.right.name|testFixture.left.id.name|testFixture.label.name|testFixture.body.body.label.name|testFixture.expression.body.argument.name|testFixture.expression.body.argument.left.name|testFixture.expression.body.argument.right.name|testFixture.object.name|testFixture.body.expression.left.name|testFixture.body.expression.right.name|testFixture.discriminant.name|testFixture.argument.name|testFixture.argument.left.name|testFixture.argument.right.name|testFixture.argument.key.name|testFixture.param.name|testFixture.finalizer.expression.callee.name|testFixture.finalizer.expression.name|testFixture.block.expression.callee.name|testFixture.name|testFixture.expression.id.name|testFixture.body.id.name|testFixture.init.body.expression.callee.name|testFixture.expression.body.expression.name|testFixture.API.result.expression.name|testFixture.expression.callee.body.object.name|testFixture.init.key.name|testFixture.init.value.name|testFixture.expression.key.name|testFixture.expression.left.callee.name|*|name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|name|jQuery.serializeArray.name|*|window.angular.scenario.ObjectModel.value.name|jQuery.serializeArray.name|errorObj.name|name|newContext.makeModuleMap.name|name|loadLib.parseObjectPropertyKey.name|loadLib.parsePrimaryExpression.name|loadLib.parseNonComputedProperty.name|loadLib.parseVariableIdentifier.name|Function|*|Function|Function|Function|Function|Function|SourceMapConsumer.originalPositionFor.name|SourceMapConsumer.eachMapping.name|AST_ForIn.$propdoc.name|AST_Lambda.$propdoc.name|AST_VarDef.$propdoc.name|AST_Symbol.$propdoc.name|sym.name|ref.name|config.modules.name|.onCompleteData.name|name|name|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|string|two.name|one.name|exports.name|string|string|string|string|string|name|string|string|HiredisReplyParser.name|Mark.name|string|ScriptBrowser.name|string|name|TRBL.name|packet.name|SocketNamespace.name|Flag.name|Browser.name|packet.name|string|string|string|string|SocketNamespace.name|string|FileException.name|Task._tasks.name|string|RedisReplyParser.name|.XMLFragment.name|name|name|$2.name|$2.name|Test.name|Test.name|Command.name|name|name|string|string|Test.name|Test.name|TRBL.name|name|name|name|ZipObject.name|NodeWithToken.name|name|Test.name|Dog.name|.Access.name|Class.ctor.name|Assign.value.name|.Param.name|.Splat.name|.For.name|.Access.name|Class.ctor.name|Assign.value.name|.Param.name|.Splat.name|.For.name|x.expr.attrHandle.name|name|packet.name|SocketNamespace.name|Flag.name|string|$$.name|$$.name|Benchmark.name|Suite.name|TRBL.name|sinon.throwsException.exception.name|string|name|jQuery.attrHooks.name|name|name|name|name|name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|name|window.angular.scenario.Describe.name|window.angular.scenario.Future.name|window.angular.scenario.ObjectModel.Spec.name|window.angular.scenario.ObjectModel.Step.name|errorObject.name|loadLib.NodeWithToken.name|name|newMapping.name|loadLib.SourceNode.name|loadLib.SymbolDef.name|args.value.name)}}
+                 * @returns {{id: *, lat: *, lng: *, message: (*)}}
                  */
                 function addVenueFromFourSquare(venue) {
-                    if ($scope.markers[venue.id]) {
-                        return $scope.markers[venue.id];
-                    }
-
-                    var marker = $scope.markers[venue.id] = {
+                    var marker = addMarker({
                         //icon: icon,
                         id: venue.id,
                         lat: venue.location.lat,
@@ -322,13 +320,14 @@ define([
                         location: venue.name,
                         life: 0,
                         favorites: false
-                    };
+                    });
 
                     setupIconForMarker(marker);
                     return marker;
                 }
 
                 function addVenueFromGoogleGeoCoding(item) {
+                    return;
                     /*var id = item.address_components.map(function(component) {
                      return component.long_name;
                      }).join(',').replace(/\s/gi, '-');*/
@@ -350,7 +349,7 @@ define([
                 }
 
                 function generateID() {
-                    return Date.now() + '-' + String(Math.random()).substr(2, 100);
+                    return Date.now() + '_' + String(Math.random()).substr(2, 100);
                 }
 
                 /**
@@ -403,6 +402,42 @@ define([
                         });
                 }
 
+                function addMarker(marker) {
+                    if ($scope.markersByLocation[marker.location]) {
+                        //TODO: update
+                        return $scope.markersByLocation[marker.location];
+                    }
+
+                    $scope.markers[marker.id] = marker;
+
+                    $scope.markersByLocation[marker.location] = marker;
+
+                    return marker;
+                }
+
+                function fetchImageFromCache() {
+                    var bounds = LocationStateService.bounds;
+                    if (!bounds.sw || !bounds.ne) {
+                        return;
+                    }
+
+                    var newImages = _(ImagesService.getImageInside(bounds));
+
+                    newImages.forEach(function(newImage) {
+                        addMarker({
+                            id: generateID(),
+                            icon: buildImageIcon(newImage.image),
+                            _image: newImage.image,
+                            lat: newImage.lat,
+                            lng: newImage.lng,
+                            layer: 'images',
+                            message: newImage.name || '',
+                            title: newImage.name || '',
+                            location: newImage.location
+                        });
+                    });
+                }
+
                 /**
                  * fetch venues from Instagram
                  * @private
@@ -442,7 +477,7 @@ define([
 //                    var image = getImageByCoords(marker.lat, marker.lng);
                     var image = ImagesService.getImageByLocation(marker.location);
                     if (image) {
-                        marker.icon = buildImageIcon(image.url);
+                        marker.icon = buildImageIcon(image);
                         marker.icon._image = image
                     }
                 }
@@ -450,17 +485,18 @@ define([
                 /**
                  * build icon
                  *
-                 * @param lat
-                 * @param lng
+                 * @param url
                  * @returns {*}
                  */
-                function buildImageIcon(imageUrl) {
-                    return L.divIcon({
-                        html: '<img src="' + imageUrl + '" width="64" height="64"/>',
-                        iconSize: [0, 0],
+                function buildImageIcon(url) {var icon =  L.divIcon({
+                        html: '<img src="' + url + '" width="64" height="64"/>',
                         popupAnchor: [0, -32],
                         iconAnchor: [32, 32]
                     });
+
+                    icon._image = url;
+
+                    return icon;
                 }
 
                 /**
@@ -483,6 +519,7 @@ define([
                     DeletedPlacesService.addToDeleted(marker);
 
                     delete $scope.markers[id];
+                    delete $scope.markersByLocation[marker.location];
                 }
 
                 /**
@@ -549,7 +586,8 @@ define([
                     //localVenues = null;
 
                     DeletedPlacesService.fetchVenuesFromDeleted(sw, ne, function (marker) {
-                        $scope.markers[marker.id] = marker;
+//                        $scope.markers[marker.id] = marker;
+                        addMarker(marker);
                     });
 
                     //TODO: Fix Bounding quadrangles with an area up to approximately 10,000 square kilometers are supported.
@@ -567,6 +605,12 @@ define([
 
                     if ($scope.autoUpdate) {
                         lazy(fetchVenuesFromFourSquare, 2 * 1000);
+                    }
+
+                    fetchImageFromCache();
+
+                    if ($scope.autoUpdate) {
+                        hideInvisibleMarkers();
                     }
                 }
 
@@ -594,17 +638,19 @@ define([
                 }
 
                 function getImageOfMarker(marker) {
-                    return marker && marker.options && marker.options.icon && marker.options.icon._image;
+                    return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
                 }
 
                 function iconCreateFunction(cluster) {
                     var children = cluster.getAllChildMarkers(),
-                        image;
-
-                    children.some(function (marker) {
-                        image = getImageOfMarker(marker);
-                        return !!image && image.url;
-                    });
+                        image = _(children)
+                                    .map(function(marker) {
+                                        return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
+                                    })
+                                    .filter(function(url) {
+                                        return !!url;
+                                    })
+                                    .first();
 
                     var childCount = cluster.getChildCount();
 
@@ -617,18 +663,11 @@ define([
                         c += 'large';
                     }
 
-                    var imageSrc = image ? ('<img src="' + image.url + '" width="64" height="64"/>') : '';
-
-                    var markersWithIcons = [];
-                    Object.keys($scope.markers).forEach(function (id) {
-                        var marker = $scope.markers[id];
-                        if (marker && marker.icon) {
-                            markersWithIcons.push(marker);
-                        }
-                    });
+                    var imageSrc = image ? ('<img src="' + image + '" width="64" height="64"/>') : '';
 
                     return new L.DivIcon({
-                        html: '<div>' + imageSrc + '<span>' + childCount + '</span></div>',
+                        html: '<div>' + imageSrc + (childCount > 1?('<span>' + childCount + '</span>'):'') + '</div>',
+                        _image: image,
                         className: 'marker-cluster' + c,
                         iconSize: new L.Point(40, 40)
                     });

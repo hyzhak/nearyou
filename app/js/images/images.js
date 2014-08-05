@@ -1,7 +1,8 @@
 define([
     'angular',
-    'app/images/cacheGenerator'
-], function(angular, cacheGenerator) {
+    'app/images/cacheGenerator',
+    'lodash'
+], function(angular, cacheGenerator, _) {
     'use strict';
 
     angular.module('NY.ImagesService', [])
@@ -28,6 +29,7 @@ define([
                 imagesByLocation[location] = {
                     lat: lat,
                     lng: lng,
+                    location: location,
                     name: name,
                     image: image
                 };
@@ -35,6 +37,18 @@ define([
 
             api.getImageByLocation = function(location) {
                 return imagesByLocation[location];
+            };
+
+            api.getImageInside = function(bounds) {
+                return _(imagesByLocation)
+                    .values()
+                    .filter(function(image) {
+                        return bounds.sw.lat < image.lat &&
+                            image.lat < bounds.ne.lat &&
+                            bounds.sw.lng < image.lng &&
+                            image.lng < bounds.ne.lng;
+                    })
+                    .value();
             };
         });
 });
