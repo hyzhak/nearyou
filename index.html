@@ -48,7 +48,10 @@
           Photos
         </li>
         <li ng-class="{ active: $state.includes('at-with-location')}">
-          <a ui-sref="at">Near you</a>
+          <a ui-sref="at">
+            <i class="fa fa-film"></i>
+            Near you
+          </a>
         </li>
         <li class="active"
             ng-if="$state.includes('at-with-venue')"
@@ -58,7 +61,10 @@
           </a>
         </li>
         <li ng-class="{ active: $state.includes('places')}">
-          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">Search</a>
+          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">
+            <i class="fa fa-globe"></i>
+            Search
+          </a>
         </li>
         <li ng-class="{ active: $state.includes('about')}">
           <a href ng-click="openAbout()">About...</a>
