@@ -31,13 +31,15 @@ define([
             'GoogleAnalytics',
             'GoogleGeoCoding',
             'ImagesService',
+            'InstagramImages',
             'LocationStateService',
             'Locations',
+            '$q',
             '$rootScope',
             '$scope',
             '$stateParams',
             '$timeout',
-            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch, INSTAGRAM_CLIENT_ID, GoogleAnalytics, GoogleGeoCoding, ImagesService, LocationStateService, Locations, $rootScope, $scope, $stateParams, $timeout) {
+            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch, INSTAGRAM_CLIENT_ID, GoogleAnalytics, GoogleGeoCoding, ImagesService, InstagramImages, LocationStateService, Locations, $q, $rootScope, $scope, $stateParams, $timeout) {
 
                 var usedImages = [];
 
@@ -315,6 +317,7 @@ define([
                         lat: venue.location.lat,
                         lng: venue.location.lng,
                         layer: 'images',
+                        icon: buildImageIcon(ImagesService.getImageByLocation(venue.name)),
                         message: venue.name,
                         title: venue.name,
                         location: venue.name,
@@ -322,7 +325,7 @@ define([
                         favorites: false
                     });
 
-                    setupIconForMarker(marker);
+//                    setupIconForMarker(marker);
                     return marker;
                 }
 
@@ -374,6 +377,44 @@ define([
                         }, interval);
                     }
                 })();
+
+                function fetchInstagramImages() {
+                    var bounds = LocationStateService.bounds;
+                    if (!bounds.sw || !bounds.ne) {
+                        return;
+                    }
+
+                    $q.all(_([{
+                        lat: bounds.sw.lat,
+                        lng: bounds.sw.lng
+                    }, {
+                        lat: bounds.sw.lat,
+                        lng: bounds.ne.lng
+                    }, {
+                        lat: bounds.ne.lat,
+                        lng: bounds.sw.lng
+                    }, {
+                        lat: bounds.ne.lat,
+                        lng: bounds.ne.lng
+                    }]).map(function(point) {
+                        return InstagramImages.queryByLocation(
+                            point.lat, point.lng,
+                            5000 //TODO: should be calc by bounds
+                        )
+                    }))
+                        .then(function() {
+                            fetchImageFromCache();
+                        })
+
+//                    InstagramImages.queryByLocation(
+//                        0.5 * (bounds.sw.lat + bounds.ne.lat),
+//                        0.5 * (bounds.sw.lng + bounds.ne.lng),
+//                        5000 //TODO: should be calc by bounds
+//                    )
+//                        .then(function(images) {
+//                            fetchImageFromCache();
+//                        })
+                }
 
                 /**
                  * fetch venues from 4sq
@@ -488,7 +529,12 @@ define([
                  * @param url
                  * @returns {*}
                  */
-                function buildImageIcon(url) {var icon =  L.divIcon({
+                function buildImageIcon(url) {
+                    if (!url) {
+                        return null;
+                    }
+
+                    var icon =  L.divIcon({
                         html: '<img src="' + url + '" width="64" height="64"/>',
                         popupAnchor: [0, -32],
                         iconAnchor: [32, 32]
@@ -605,6 +651,7 @@ define([
 
                     if ($scope.autoUpdate) {
                         lazy(fetchVenuesFromFourSquare, 2 * 1000);
+                        lazy(fetchInstagramImages, 2 * 1000);
                     }
 
                     fetchImageFromCache();

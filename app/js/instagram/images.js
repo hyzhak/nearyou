@@ -9,6 +9,7 @@ define([
         ])
         .service('InstagramImages', ['ImagesService', 'INSTAGRAM_CLIENT_ID', '$http', function(ImagesService, INSTAGRAM_CLIENT_ID, $http) {
             var self = this;
+
             /**
              *
              * @param lat
