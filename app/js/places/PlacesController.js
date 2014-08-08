@@ -95,6 +95,7 @@ define([
                     }
                 });
 
+                $scope.numOfMarkers = 0;
                 $scope.markers = {};
                 $scope.markersByLocation = {};
 
@@ -121,12 +122,12 @@ define([
                     $scope.selected = marker;
 
                     /*$scope.paths[currentSelectedMarker.id] = {
-                        weight: 2,
-                        color: '#ff612f',
-                        latlngs: marker,
-                        radius: LocationStateService.distance || DEFAULT_DISTANCE,
-                        type: 'circle'
-                    };*/
+                     weight: 2,
+                     color: '#ff612f',
+                     latlngs: marker,
+                     radius: LocationStateService.distance || DEFAULT_DISTANCE,
+                     type: 'circle'
+                     };*/
                 }
 
                 function mapChangeHandler(event, e) {
@@ -363,57 +364,96 @@ define([
                         'zoom : ' + $scope.center.zoom);
                 }
 
-                var lazy = (function () {
-                    var timeoutId;
+                var buildLazy = function (initCallback, initInterval) {
+                    return (function () {
+                        var timeoutId;
 
-                    return function (callback, interval) {
-                        if (timeoutId) {
-                            $timeout.cancel(timeoutId);
+                        return function (callback, interval) {
+                            interval = interval || initInterval;
+                            callback = callback || initCallback;
+                            if (timeoutId) {
+                                $timeout.cancel(timeoutId);
+                            }
+
+                            timeoutId = $timeout(function () {
+                                callback();
+                                timeoutId = null;
+                            }, interval);
                         }
+                    })();
+                };
 
-                        timeoutId = $timeout(function () {
-                            callback();
-                            timeoutId = null;
-                        }, interval);
-                    }
-                })();
+                /**
+                 * This script [in Javascript] calculates great-circle distances between the two points –
+                 * that is, the shortest distance over the earth’s surface – using the ‘Haversine’ formula.
+                 * http://stackoverflow.com/questions/27928/how-do-i-calculate-distance-between-two-latitude-longitude-points
+                 *
+                 * @param lat1
+                 * @param lon1
+                 * @param lat2
+                 * @param lon2
+                 * @returns {number}
+                 */
+                function getGreatCircleDistance(lat1, lon1, lat2, lon2) {
+                    var earthRadius = 6371 * 1000; // Radius of the earth in m
+                    var dLat = deg2rad(lat2 - lat1);  // deg2rad below
+                    var dLon = deg2rad(lon2 - lon1);
+                    var a =
+                            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                                Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+                                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+                    return earthRadius * c; // Distance in m
+                }
+
+                function deg2rad(deg) {
+                    return deg * (Math.PI / 180)
+                }
 
                 function fetchInstagramImages() {
                     var bounds = LocationStateService.bounds;
+
                     if (!bounds.sw || !bounds.ne) {
                         return;
                     }
 
-                    $q.all(_([{
-                        lat: bounds.sw.lat,
-                        lng: bounds.sw.lng
-                    }, {
-                        lat: bounds.sw.lat,
-                        lng: bounds.ne.lng
-                    }, {
-                        lat: bounds.ne.lat,
-                        lng: bounds.sw.lng
-                    }, {
-                        lat: bounds.ne.lat,
-                        lng: bounds.ne.lng
-                    }]).map(function(point) {
-                        return InstagramImages.queryByLocation(
-                            point.lat, point.lng,
-                            5000 //TODO: should be calc by bounds
-                        )
-                    }))
-                        .then(function() {
-                            fetchImageFromCache();
-                        })
+                    var distance = getGreatCircleDistance(bounds.sw.lat, bounds.sw.lng, bounds.ne.lat, bounds.ne.lng),
+                        radius = distance/2;
 
-//                    InstagramImages.queryByLocation(
-//                        0.5 * (bounds.sw.lat + bounds.ne.lat),
-//                        0.5 * (bounds.sw.lng + bounds.ne.lng),
-//                        5000 //TODO: should be calc by bounds
-//                    )
-//                        .then(function(images) {
-//                            fetchImageFromCache();
-//                        })
+                    if (radius > 5000) {
+                        radius = 5000;
+                    }
+
+                    /**
+                     * cover bounds by 4 circle with centres in a corners of bounds
+                     */
+
+                    $q.all(_([
+                        {
+                            lat: bounds.sw.lat,
+                            lng: bounds.sw.lng
+                        },
+                        {
+                            lat: bounds.sw.lat,
+                            lng: bounds.ne.lng
+                        },
+                        {
+                            lat: bounds.ne.lat,
+                            lng: bounds.sw.lng
+                        },
+                        {
+                            lat: bounds.ne.lat,
+                            lng: bounds.ne.lng
+                        }
+                    ]).map(function (point) {
+                            return InstagramImages
+                                .queryByLocation(
+                                    point.lat, point.lng, radius
+                                ).then(function () {
+                                    fetchImageFromCache();
+                                })
+                        }));
                 }
 
                 /**
@@ -464,7 +504,7 @@ define([
 
                     var newImages = _(ImagesService.getImageInside(bounds));
 
-                    newImages.forEach(function(newImage) {
+                    newImages.forEach(function (newImage) {
                         addMarker({
                             id: generateID(),
                             icon: buildImageIcon(newImage.image),
@@ -530,11 +570,14 @@ define([
                  * @returns {*}
                  */
                 function buildImageIcon(url) {
-                    if (!url) {
-                        return null;
+                    if (!url || typeof url !== 'string') {
+                        return new L.Icon.Default();
+                        /*return new L.icon({
+
+                        });*/
                     }
 
-                    var icon =  L.divIcon({
+                    var icon = L.divIcon({
                         html: '<img src="' + url + '" width="64" height="64"/>',
                         popupAnchor: [0, -32],
                         iconAnchor: [32, 32]
@@ -620,6 +663,9 @@ define([
                         point.lng < bounds.sw.lng || bounds.ne.lng < point.lng;
                 }
 
+                var lazyFetchVenuesFromFourSquare = buildLazy(fetchVenuesFromFourSquare, 2 * 1000),
+                    lazyFetchInstagramImages = buildLazy(fetchInstagramImages, 1000);
+
                 function updateBounds(sw, ne) {
                     var maxWidth = 2,
                         maxHeight = 2;
@@ -650,8 +696,8 @@ define([
                     }
 
                     if ($scope.autoUpdate) {
-                        lazy(fetchVenuesFromFourSquare, 2 * 1000);
-                        lazy(fetchInstagramImages, 2 * 1000);
+                        lazyFetchVenuesFromFourSquare();
+                        lazyFetchInstagramImages();
                     }
 
                     fetchImageFromCache();
@@ -691,17 +737,17 @@ define([
                 function iconCreateFunction(cluster) {
                     var children = cluster.getAllChildMarkers(),
                         image = _(children)
-                                    .map(function(marker) {
-                                        return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
-                                    })
-                                    .filter(function(url) {
-                                        return !!url;
-                                    })
-                                    .first();
+                            .map(function (marker) {
+                                return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
+                            })
+                            .filter(function (url) {
+                                return !!url;
+                            })
+                            .first();
 
                     var childCount = cluster.getChildCount();
 
-                    var c = ' marker-cluster-';
+                    var c = ' photo-marker-cluster-';
                     if (childCount < 10) {
                         c += 'small';
                     } else if (childCount < 100) {
@@ -710,14 +756,18 @@ define([
                         c += 'large';
                     }
 
-                    var imageSrc = image ? ('<img src="' + image + '" width="64" height="64"/>') : '';
+                    if (image) {
+                        var imageSrc = '<img src="' + image + '" width="64" height="64"/>';
 
-                    return new L.DivIcon({
-                        html: '<div>' + imageSrc + (childCount > 1?('<span>' + childCount + '</span>'):'') + '</div>',
-                        _image: image,
-                        className: 'marker-cluster' + c,
-                        iconSize: new L.Point(40, 40)
-                    });
+                        return new L.divIcon({
+                            html: '<div>' + imageSrc + (childCount > 1 ? ('<span class="photos-counter">' + childCount + '</span>') : '') + '</div>',
+                            _image: image,
+                            className: 'photo-marker-cluster' + c,
+                            iconSize: new L.Point(40, 40)
+                        });
+                    } else {
+                        return new L.Icon.Default();
+                    }
                 }
             }]);
 });

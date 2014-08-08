@@ -135,3 +135,36 @@ $insta-images-size: 612
   width: 180px
   max-height: 40px
   overflow: hidden
+
+.photo-marker-cluster
+  border: black 2px solid
+  width: 72px !important
+  background: black
+  border-radius: 8px
+
+  &>div
+    margin:
+      left: 2px
+      top: 2px
+    &>img
+      border-radius: 4px
+
+  &.photo-marker-cluster-small
+    background-color: black
+    height: 72px !important
+
+  &.photo-marker-cluster-medium
+    background-color: 0x101010
+    height: 80px !important
+
+  &.photo-marker-cluster-large
+    background-color: 0x202020
+    height: 88px !important
+
+  .photos-counter
+    position: absolute
+    top: 50px
+    left: 2px
+    color: white
+    font-weight: bold
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 1)
