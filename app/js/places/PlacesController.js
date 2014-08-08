@@ -687,9 +687,11 @@ define([
                 }
 
                 function isOutsideTheBounds(point) {
-                    var bounds = LocationStateService.bounds;
-                    return point.lat < bounds.sw.lat || bounds.ne.lat < point.lat ||
-                        point.lng < bounds.sw.lng || bounds.ne.lng < point.lng;
+                    var bounds = $scope.bounds;
+                    return point.lat < bounds.southWest.lat ||
+                        bounds.northEast.lat < point.lat ||
+                        point.lng < bounds.southWest.lng ||
+                        bounds.northEast.lng < point.lng;
                 }
 
                 var lazyFetchVenuesFromFourSquare = buildLazy(fetchVenuesFromFourSquare, 2 * 1000),
