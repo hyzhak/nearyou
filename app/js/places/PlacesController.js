@@ -12,13 +12,14 @@ define([
 ], function (angular, _) {
     'use strict';
 
-    var DEFAULT_DISTANCE = 5000;
-
     angular.module('NY.PlacesCtrl', [
             'Instagram',
             'NY.DeletedPlacesService',
             'NY.ImagesService'
         ])
+        .constant({
+            MAX_NUM_OF_VISIBLE_MARKERS: 150
+        })
         .controller('PlacesCtrl', [
             'DeletedPlacesService',
 
@@ -34,12 +35,15 @@ define([
             'InstagramImages',
             'LocationStateService',
             'Locations',
+            '$log',
+            'MAX_INSTAGRAM_RADIUS',
+            'MAX_NUM_OF_VISIBLE_MARKERS',
             '$q',
             '$rootScope',
             '$scope',
             '$stateParams',
             '$timeout',
-            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch, INSTAGRAM_CLIENT_ID, GoogleAnalytics, GoogleGeoCoding, ImagesService, InstagramImages, LocationStateService, Locations, $q, $rootScope, $scope, $stateParams, $timeout) {
+            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch, INSTAGRAM_CLIENT_ID, GoogleAnalytics, GoogleGeoCoding, ImagesService, InstagramImages, LocationStateService, Locations, $log, MAX_INSTAGRAM_RADIUS, MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
 
                 var usedImages = [];
 
@@ -155,17 +159,22 @@ define([
                     GoogleGeoCoding.get({
                         address: text
                     }).$promise.then(function (data) {
-                            $scope.autoUpdate = false;
+                            updateBounds($scope.bounds.southWest, $scope.bounds.northEast);
 
                             var zoomOnGeoCoding = zoomToGeoCoding(data.results);
 
-                            data.results.forEach(function (item) {
-                                addVenueFromGoogleGeoCoding(item);
-                            });
+//                          HINT: I'm not sure that we need such markers
+//
+//                            data.results.forEach(function (item) {
+//                                addVenueFromGoogleGeoCoding(item);
+//                            });
 
                             var centerLat = ($scope.bounds.southWest.lat + $scope.bounds.northEast.lat) / 2,
                                 centerLng = ($scope.bounds.southWest.lng + $scope.bounds.northEast.lng) / 2;
 
+                            /*
+
+                            HINT: as well we don't need 4sq markesr
                             FourSquareSearch.get({
                                 query: text,
                                 ll: centerLat + ',' + centerLng,
@@ -189,6 +198,7 @@ define([
                                         zoomToMarkers($scope.markers);
                                     }
                                 });
+                            */
                         });
                 };
 
@@ -222,6 +232,8 @@ define([
                  */
                 function removeAllMarkers() {
                     $scope.markers = {};
+                    $scope.markersByLocation = {};
+                    $scope.numOfMarkers = 0;
                 }
 
                 /**
@@ -419,34 +431,41 @@ define([
                     }
 
                     var distance = getGreatCircleDistance(bounds.sw.lat, bounds.sw.lng, bounds.ne.lat, bounds.ne.lng),
-                        radius = distance/2;
+                        radius = distance / 2,
+                        targes = [
+                            {
+                                lat: bounds.sw.lat,
+                                lng: bounds.sw.lng
+                            },
+                            {
+                                lat: bounds.sw.lat,
+                                lng: bounds.ne.lng
+                            },
+                            {
+                                lat: bounds.ne.lat,
+                                lng: bounds.sw.lng
+                            },
+                            {
+                                lat: bounds.ne.lat,
+                                lng: bounds.ne.lng
+                            }
+                        ];
 
-                    if (radius > 5000) {
-                        radius = 5000;
+                    if (radius > MAX_INSTAGRAM_RADIUS) {
+                        radius = MAX_INSTAGRAM_RADIUS;
+                        //request in a center
+                        targes.push({
+                            lat: 0.5 * (bounds.ne.lat + bounds.sw.lat),
+                            lng: 0.5 * (bounds.ne.lng + bounds.ne.lng)
+                        });
                     }
 
                     /**
                      * cover bounds by 4 circle with centres in a corners of bounds
                      */
 
-                    $q.all(_([
-                        {
-                            lat: bounds.sw.lat,
-                            lng: bounds.sw.lng
-                        },
-                        {
-                            lat: bounds.sw.lat,
-                            lng: bounds.ne.lng
-                        },
-                        {
-                            lat: bounds.ne.lat,
-                            lng: bounds.sw.lng
-                        },
-                        {
-                            lat: bounds.ne.lat,
-                            lng: bounds.ne.lng
-                        }
-                    ]).map(function (point) {
+                    $q.all(_(targes)
+                        .map(function (point) {
                             return InstagramImages
                                 .queryByLocation(
                                     point.lat, point.lng, radius
@@ -489,6 +508,15 @@ define([
                         return $scope.markersByLocation[marker.location];
                     }
 
+                    if ($scope.markers[marker.id]) {
+                        throw new Error('impossible case when $scope.markers[key] is defined but $scope.markersByLocation[key] undefined');
+                    }
+
+                    if ($scope.numOfMarkers >= MAX_NUM_OF_VISIBLE_MARKERS) {
+                        return null;
+                    }
+
+                    $scope.numOfMarkers++;
                     $scope.markers[marker.id] = marker;
 
                     $scope.markersByLocation[marker.location] = marker;
@@ -607,6 +635,7 @@ define([
 
                     DeletedPlacesService.addToDeleted(marker);
 
+                    $scope.numOfMarkers--;
                     delete $scope.markers[id];
                     delete $scope.markersByLocation[marker.location];
                 }
@@ -677,10 +706,10 @@ define([
 
                     //localVenues = null;
 
-                    DeletedPlacesService.fetchVenuesFromDeleted(sw, ne, function (marker) {
-//                        $scope.markers[marker.id] = marker;
-                        addMarker(marker);
-                    });
+                    _(DeletedPlacesService.fetchVenuesFromDeleted(sw, ne))
+                        .shuffle()
+                        .first(MAX_NUM_OF_VISIBLE_MARKERS - $scope.numOfMarkers)
+                        .forEach(addMarker);
 
                     //TODO: Fix Bounding quadrangles with an area up to approximately 10,000 square kilometers are supported.
                     if (ne.lat - sw.lat > maxWidth) {
@@ -696,8 +725,12 @@ define([
                     }
 
                     if ($scope.autoUpdate) {
-                        lazyFetchVenuesFromFourSquare();
-                        lazyFetchInstagramImages();
+                        if ($scope.numOfMarkers < MAX_NUM_OF_VISIBLE_MARKERS) {
+//                            lazyFetchVenuesFromFourSquare();
+                            lazyFetchInstagramImages();
+                        } else {
+                            $log.log('Reach MAX_NUM_OF_VISIBLE_MARKERS limit');
+                        }
                     }
 
                     fetchImageFromCache();

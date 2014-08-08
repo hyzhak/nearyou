@@ -7,6 +7,9 @@ define([
     angular.module('Instagram', [
             'NY.ImagesService'
         ])
+        .constant({
+            MAX_INSTAGRAM_RADIUS: 5000
+        })
         .service('InstagramImages', ['ImagesService', 'INSTAGRAM_CLIENT_ID', '$http', function(ImagesService, INSTAGRAM_CLIENT_ID, $http) {
             var self = this;
 

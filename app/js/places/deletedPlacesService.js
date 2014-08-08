@@ -13,14 +13,18 @@ define([
              * @private
              * get venues from deleted and add them back to visible
              */
-            api.fetchVenuesFromDeleted = function (sw, ne, callback) {
+            api.fetchVenuesFromDeleted = function (sw, ne) {
+                var result = [];
+
                 for (var i = api.deletedMarkers.length - 1; i >= 0; i--) {
                     var marker = api.deletedMarkers[i];
                     if (isMarkerInBounds(marker, sw, ne)) {
                         api.deletedMarkers.splice(i, 1);
-                        callback(marker);
+                        result.push(marker);
                     }
                 }
+
+                return result;
             };
 
             api.addToDeleted = function (marker) {
