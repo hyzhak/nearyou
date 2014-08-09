@@ -18,7 +18,9 @@ define([
             'NY.ImagesService'
         ])
         .constant({
-            MAX_NUM_OF_VISIBLE_MARKERS: 150
+            MAX_NUM_OF_VISIBLE_MARKERS: 100,
+            IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION: 80,
+            OVERPOPULATION_LIMIT: 3
         })
         .controller('PlacesCtrl', [
             'DeletedPlacesService',
@@ -31,11 +33,13 @@ define([
             'INSTAGRAM_CLIENT_ID',
             'GoogleAnalytics',
             'GoogleGeoCoding',
+            'IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION',
             'ImagesService',
             'InstagramImages',
             'LocationStateService',
             'Locations',
             '$log',
+            'OVERPOPULATION_LIMIT',
             'MAX_INSTAGRAM_RADIUS',
             'MAX_NUM_OF_VISIBLE_MARKERS',
             '$q',
@@ -43,7 +47,11 @@ define([
             '$scope',
             '$stateParams',
             '$timeout',
-            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch, INSTAGRAM_CLIENT_ID, GoogleAnalytics, GoogleGeoCoding, ImagesService, InstagramImages, LocationStateService, Locations, $log, MAX_INSTAGRAM_RADIUS, MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
+            function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch,
+                      INSTAGRAM_CLIENT_ID, GoogleAnalytics,
+                      GoogleGeoCoding, IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION, ImagesService, InstagramImages,
+                      LocationStateService, Locations, $log, OVERPOPULATION_LIMIT, MAX_INSTAGRAM_RADIUS,
+                      MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
 
                 var usedImages = [];
 
@@ -102,6 +110,7 @@ define([
                 $scope.numOfMarkers = 0;
                 $scope.markers = {};
                 $scope.markersByLocation = {};
+                $scope.overpopulatedMarkers = {};
 
                 $scope.selected = null;
 
@@ -424,30 +433,32 @@ define([
                 }
 
                 function fetchInstagramImages() {
-                    var bounds = LocationStateService.bounds;
+                    var bounds = $scope.bounds,
+                        sw = bounds.southWest,
+                        ne = bounds.northEast;
 
-                    if (!bounds.sw || !bounds.ne) {
+                    if (!sw || !ne) {
                         return;
                     }
 
-                    var distance = getGreatCircleDistance(bounds.sw.lat, bounds.sw.lng, bounds.ne.lat, bounds.ne.lng),
+                    var distance = getGreatCircleDistance(sw.lat, sw.lng, ne.lat, ne.lng),
                         radius = distance / 2,
                         targes = [
                             {
-                                lat: bounds.sw.lat,
-                                lng: bounds.sw.lng
+                                lat: sw.lat,
+                                lng: sw.lng
                             },
                             {
-                                lat: bounds.sw.lat,
-                                lng: bounds.ne.lng
+                                lat: sw.lat,
+                                lng: ne.lng
                             },
                             {
-                                lat: bounds.ne.lat,
-                                lng: bounds.sw.lng
+                                lat: ne.lat,
+                                lng: sw.lng
                             },
                             {
-                                lat: bounds.ne.lat,
-                                lng: bounds.ne.lng
+                                lat: ne.lat,
+                                lng: ne.lng
                             }
                         ];
 
@@ -455,8 +466,8 @@ define([
                         radius = MAX_INSTAGRAM_RADIUS;
                         //request in a center
                         targes.push({
-                            lat: 0.5 * (bounds.ne.lat + bounds.sw.lat),
-                            lng: 0.5 * (bounds.ne.lng + bounds.ne.lng)
+                            lat: 0.5 * (ne.lat + sw.lat),
+                            lng: 0.5 * (ne.lng + sw.lng)
                         });
                     }
 
@@ -512,8 +523,22 @@ define([
                         throw new Error('impossible case when $scope.markers[key] is defined but $scope.markersByLocation[key] undefined');
                     }
 
+                    if (marker.overpopulated) {
+                        if ($scope.numOfMarkers >= IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION) {
+                            //don't add overpopulated marker if we already has situation of overpopulation
+                            console.log('don\'t add overpopulated marker if we already has situation of overpopulation');
+                            return null;
+                        } else {
+                            //otherwise add this marker to list of markers which ready to move to overpopulation list
+                            console.log('otherwise add this marker to list of markers which ready to move to overpopulation list');
+                            $scope.overpopulatedMarkers[marker.id] = marker;
+                        }
+                    }
+
                     if ($scope.numOfMarkers >= MAX_NUM_OF_VISIBLE_MARKERS) {
-                        return null;
+                        if (!removeOneOverPopulated()) {
+                            return null;
+                        }
                     }
 
                     $scope.numOfMarkers++;
@@ -522,6 +547,30 @@ define([
                     $scope.markersByLocation[marker.location] = marker;
 
                     return marker;
+                }
+
+                function addMarkerToOverpopulationList(marker) {
+                    console.log('add marker to overpopulation');
+                    marker.overpopulated = true;
+                    $scope.overpopulatedMarkers[marker.id] = marker;
+                }
+
+                /**
+                 * try to remove one overpopulated marker
+                 *
+                 * @returns {Boolean}
+                 */
+                function removeOneOverPopulated() {
+                    var marker = _($scope.overpopulatedMarkers)
+                        .sample();
+
+                    console.log('removeOneOverPopulated');
+
+                    if (marker) {
+                        return deleteMarker(marker.id);
+                    } else {
+                        return false;
+                    }
                 }
 
                 function fetchImageFromCache() {
@@ -533,10 +582,16 @@ define([
                     var newImages = _(ImagesService.getImageInside(bounds));
 
                     newImages.forEach(function (newImage) {
-                        addMarker({
-                            id: generateID(),
-                            icon: buildImageIcon(newImage.image),
+                        if (DeletedPlacesService.getImageByLocation(newImage.location)) {
+                            return;
+                        }
+
+                        var id = generateID();
+
+                        var marker = addMarker({
+                            id: id,
                             _image: newImage.image,
+                            icon: buildImageIcon(id, newImage.image),
                             lat: newImage.lat,
                             lng: newImage.lng,
                             layer: 'images',
@@ -544,6 +599,10 @@ define([
                             title: newImage.name || '',
                             location: newImage.location
                         });
+
+                        if (!marker.icon._markerId) {
+                            console.log('!');
+                        }
                     });
                 }
 
@@ -594,24 +653,28 @@ define([
                 /**
                  * build icon
                  *
+                 * @param id
                  * @param url
                  * @returns {*}
                  */
-                function buildImageIcon(url) {
+                function buildImageIcon(id, url) {
+                    var icon;
                     if (!url || typeof url !== 'string') {
-                        return new L.Icon.Default();
+                        icon =  new L.Icon.Default();
                         /*return new L.icon({
 
                         });*/
+                    } else {
+                        var icon = L.divIcon({
+                            html: '<img src="' + url + '" width="64" height="64"/>',
+                            popupAnchor: [0, -32],
+                            iconAnchor: [32, 32]
+                        });
+
+                        icon._image = url;
                     }
 
-                    var icon = L.divIcon({
-                        html: '<img src="' + url + '" width="64" height="64"/>',
-                        popupAnchor: [0, -32],
-                        iconAnchor: [32, 32]
-                    });
-
-                    icon._image = url;
+                    icon._markerId = id;
 
                     return icon;
                 }
@@ -623,7 +686,7 @@ define([
                 function deleteMarker(id) {
                     var marker = $scope.markers[id];
                     if (!marker) {
-                        return;
+                        return false;
                     }
 
                     var image = getImageOfMarkerData(marker),
@@ -638,6 +701,8 @@ define([
                     $scope.numOfMarkers--;
                     delete $scope.markers[id];
                     delete $scope.markersByLocation[marker.location];
+                    delete $scope.overpopulatedMarkers[id];
+                    return true;
                 }
 
                 /**
@@ -771,9 +836,9 @@ define([
 
                 function iconCreateFunction(cluster) {
                     var children = cluster.getAllChildMarkers(),
-                        image = _(children)
-                            .map(function (marker) {
-                                return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
+                        marker = _(children)
+                            .map(function (icon) {
+                                return icon && icon.options && icon.options.icon && icon.options.icon.options && $scope.markers[icon.options.icon.options._markerId];
                             })
                             .filter(function (url) {
                                 return !!url;
@@ -791,12 +856,28 @@ define([
                         c += 'large';
                     }
 
-                    if (image) {
-                        var imageSrc = '<img src="' + image + '" width="64" height="64"/>';
+                    var r = _(children)
+                        .shuffle()
+                        .map(function(icon) {
+                            return $scope.markers[icon.options.icon.options._markerId];
+                        })
+                        .filter(function(marker) {
+                            return marker && !marker.overpopulated;
+                        });;
+
+                    console.log('r.size()', r.size(), childCount);
+
+                    r
+                        .rest(OVERPOPULATION_LIMIT)
+                        .forEach(addMarkerToOverpopulationList);
+
+                    if (marker && marker._image) {
+                        var imageSrc = '<img src="' + marker._image + '" width="64" height="64"/>';
 
                         return new L.divIcon({
                             html: '<div>' + imageSrc + (childCount > 1 ? ('<span class="photos-counter">' + childCount + '</span>') : '') + '</div>',
-                            _image: image,
+                            _markerId: marker.id,
+                            _image: marker._image,
                             className: 'photo-marker-cluster' + c,
                             iconSize: new L.Point(40, 40)
                         });

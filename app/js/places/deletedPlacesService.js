@@ -8,6 +8,7 @@ define([
         .service('DeletedPlacesService', function () {
             var api = this;
             api.deletedMarkers = [];
+            api.deletedMarkersByLocation = {};
 
             /**
              * @private
@@ -20,6 +21,7 @@ define([
                     var marker = api.deletedMarkers[i];
                     if (isMarkerInBounds(marker, sw, ne)) {
                         api.deletedMarkers.splice(i, 1);
+                        api.deletedMarkersByLocation[marker.location] = null;
                         result.push(marker);
                     }
                 }
@@ -29,6 +31,11 @@ define([
 
             api.addToDeleted = function (marker) {
                 api.deletedMarkers.push(marker);
+                api.deletedMarkersByLocation[marker.location] = marker;
+            };
+
+            api.getImageByLocation = function(location) {
+                return api.deletedMarkersByLocation[location];
             };
 
             function isMarkerInBounds(marker, sw, ne) {
