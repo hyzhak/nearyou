@@ -523,21 +523,19 @@ define([
                         throw new Error('impossible case when $scope.markers[key] is defined but $scope.markersByLocation[key] undefined');
                     }
 
-                    if (marker.overpopulated) {
-                        if ($scope.numOfMarkers >= IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION) {
-                            //don't add overpopulated marker if we already has situation of overpopulation
-                            console.log('don\'t add overpopulated marker if we already has situation of overpopulation');
-                            return null;
-                        } else {
-                            //otherwise add this marker to list of markers which ready to move to overpopulation list
-                            console.log('otherwise add this marker to list of markers which ready to move to overpopulation list');
-                            $scope.overpopulatedMarkers[marker.id] = marker;
-                        }
-                    }
-
                     if ($scope.numOfMarkers >= MAX_NUM_OF_VISIBLE_MARKERS) {
                         if (!removeOneOverPopulated()) {
                             return null;
+                        }
+                    }
+
+                    if (marker.overpopulated) {
+                        if ($scope.numOfMarkers >= IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION) {
+                            //don't add overpopulated marker if we already has situation of overpopulation
+                            return null;
+                        } else {
+                            //otherwise add this marker to list of markers which ready to move to overpopulation list
+                            $scope.overpopulatedMarkers[marker.id] = marker;
                         }
                     }
 
@@ -550,7 +548,6 @@ define([
                 }
 
                 function addMarkerToOverpopulationList(marker) {
-                    console.log('add marker to overpopulation');
                     marker.overpopulated = true;
                     $scope.overpopulatedMarkers[marker.id] = marker;
                 }
@@ -563,8 +560,6 @@ define([
                 function removeOneOverPopulated() {
                     var marker = _($scope.overpopulatedMarkers)
                         .sample();
-
-                    console.log('removeOneOverPopulated');
 
                     if (marker) {
                         return deleteMarker(marker.id);
@@ -599,10 +594,6 @@ define([
                             title: newImage.name || '',
                             location: newImage.location
                         });
-
-                        if (!marker.icon._markerId) {
-                            console.log('!');
-                        }
                     });
                 }
 
@@ -796,7 +787,7 @@ define([
 //                            lazyFetchVenuesFromFourSquare();
                             lazyFetchInstagramImages();
                         } else {
-                            $log.log('Reach MAX_NUM_OF_VISIBLE_MARKERS limit');
+//                            $log.log('Reach MAX_NUM_OF_VISIBLE_MARKERS limit');
                         }
                     }
 
@@ -863,11 +854,7 @@ define([
                         })
                         .filter(function(marker) {
                             return marker && !marker.overpopulated;
-                        });;
-
-                    console.log('r.size()', r.size(), childCount);
-
-                    r
+                        })
                         .rest(OVERPOPULATION_LIMIT)
                         .forEach(addMarkerToOverpopulationList);
 
