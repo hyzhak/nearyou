@@ -839,9 +839,11 @@ define([
                     var childCount = cluster.getChildCount();
 
                     var c = ' photo-marker-cluster-';
-                    if (childCount < 10) {
+                    if (childCount < 2) {
+                        c += 'tiny';
+                    } else if (childCount < 10) {
                         c += 'small';
-                    } else if (childCount < 100) {
+                    } else if (childCount < 50) {
                         c += 'medium';
                     } else {
                         c += 'large';

@@ -1,7 +1,7 @@
 module.exports = function (grunt) {
     'use strict';
 
-    var githubPagesFolder = '../gh-pages/';
+    var githubPagesFolder = 'build/';
 
     // Project configuration.
     grunt.initConfig({
