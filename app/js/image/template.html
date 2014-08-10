@@ -6,11 +6,17 @@
   </div>
   <div class="modal-body"
        cg-busy="imagePromise">
-    <img style="width:100%"
-         ng-src="{{image.images.standard_resolution.url}}"/>
+    <a ng-href="{{image.link}}"
+       target="_blank">
+      <img style="width:100%"
+           ng-src="{{image.images.standard_resolution.url}}"/>
+    </a>
   </div>
   <div class="modal-footer">
+    <a class="btn btn-default"
+       ng-href="http://instagram.com/{{image.user.username}}"
+       target="_blank">@{{image.user.username}}</a>
     <button class="btn btn-primary"
-            type="submit">OK</button>
+            type="submit">Close</button>
   </div>
 </form>
