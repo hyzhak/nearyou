@@ -1,3 +1,6 @@
+$dark-color: #3c3f41
+$medium-color: #535759
+
 body
   color: #ffffff
   background:
@@ -63,7 +66,7 @@ body
   width: 100%
   z-index: 1000
   background:
-    color: #3c3f41
+    color: $dark-color
 
 //.list-content
 //  padding-top: 44px
@@ -75,7 +78,7 @@ body
   bottom: 0
   width: 100%
   z-index: 1000
-  background-color: #3c3f41
+  background-color: $dark-color
   .title
     margin: 4px
     font:
@@ -174,3 +177,11 @@ $insta-images-size: 612
     background: black
     padding-right: 4px
     border-top-right-radius: 4px
+
+.bg-dark
+  background:
+    color: $dark-color
+
+.bg-medium
+  background:
+    color: $medium-color

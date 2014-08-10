@@ -33,7 +33,7 @@ define([
                     $scope.image = image;
                 });
 
-            $scope.close = function() {
+            $scope.cancel = function() {
                 $modalInstance.close();
             };
         }]);
