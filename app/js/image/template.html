@@ -7,7 +7,9 @@
             ng-click="cancel()"
             type="button">[&times;]</button>
     <h3 class="modal-title"
-        style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><i class="fa fa-film"></i>{{image.caption.text}}</h3>
+        style="text-overflow: ellipsis;white-space: nowrap;overflow: hidden;"><i class="fa fa-film"></i>
+      {{image.caption.text || image.location.name}}
+    </h3>
   </div>
   <div class="modal-body bg-dark"
        cg-busy="imagePromise">

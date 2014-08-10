@@ -35,22 +35,22 @@ define([
                         template: imagesListTemplate
                     })
                     .state('at-with-location', {
-                        url: '/at/?lat&lng&distance',
+                        url: '/at?lat&lng&distance',
                         controller: 'LocalImagesCtrl',
                         template: imagesListTemplate
                     }).
                     state('at-with-venue', {
-                        url: '/at/{place}/?lat&lng&distance',
+                        url: '/at/{place}?lat&lng&distance',
                         controller: 'LocalImagesCtrl',
                         template: imagesListTemplate
                     }).
                     state('places', {
-                        url: 'places/?lat&lng&distance&zoom',
+                        url: '/places?lat&lng&distance&zoom',
                         controller: 'PlacesCtrl',
                         template: placesTemplate
                     })
                     .state('places.instagram', {
-                        url: 'in/{imageId}',
+                        url: '/in/{imageId}',
                         onEnter: ['ImageDlgService', '$stateParams', function(ImageDlgService, $stateParams) {
                             ImageDlgService.open($stateParams.imageId);
                         }]
