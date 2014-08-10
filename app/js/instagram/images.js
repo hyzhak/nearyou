@@ -10,7 +10,7 @@ define([
         .constant({
             MAX_INSTAGRAM_RADIUS: 5000
         })
-        .service('InstagramImages', ['ImagesService', 'INSTAGRAM_CLIENT_ID', '$http', function(ImagesService, INSTAGRAM_CLIENT_ID, $http) {
+        .service('InstagramImages', ['ImagesService', 'INSTAGRAM_CLIENT_ID', '$http', '$q', function(ImagesService, INSTAGRAM_CLIENT_ID, $http, $q) {
             var self = this;
 
             /**
@@ -41,12 +41,30 @@ define([
                                 image.location.latitude,
                                 image.location.longitude,
                                 image.location.name,
-                                image.images.thumbnail.url
+                                image.images.thumbnail.url,
+                                {
+                                    instagram: image.id
+                                }
                             );
                         });
 
                         return images;
                     });
             };
+
+            self.getImage = function(id) {
+                return $http.jsonp('https://api.instagram.com/v1/media/' + id, {
+                    params: {
+                        callback: 'JSON_CALLBACK',
+                        client_id: INSTAGRAM_CLIENT_ID
+                    }})
+                    .then(function(result) {
+                        return result.data.data;
+                    }, function(err) {
+                        //TODO: notify about error
+                        console.log(err);
+                        return $q.reject(err);
+                    });
+            }
         }]);
 });

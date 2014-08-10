@@ -9,6 +9,7 @@ define([
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css',
 
     'app/images/images',
+    'app/image/imageDlg',
     './deletedPlacesService'
 ], function (angular, L, _) {
     'use strict';
@@ -16,6 +17,7 @@ define([
     angular.module('NY.PlacesCtrl', [
             'Instagram',
             'NY.DeletedPlacesService',
+            'NY.ImageDlg',
             'NY.ImagesService'
         ])
         .constant({
@@ -32,6 +34,7 @@ define([
             'FourSquareSearch',
 
             'INSTAGRAM_CLIENT_ID',
+            'ImageDlgService',
             'GoogleAnalytics',
             'GoogleGeoCoding',
             'IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION',
@@ -49,7 +52,7 @@ define([
             '$stateParams',
             '$timeout',
             function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch,
-                      INSTAGRAM_CLIENT_ID, GoogleAnalytics,
+                      INSTAGRAM_CLIENT_ID, ImageDlgService, GoogleAnalytics,
                       GoogleGeoCoding, IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION, ImagesService, InstagramImages,
                       LocationStateService, Locations, $log, OVERPOPULATION_LIMIT, MAX_INSTAGRAM_RADIUS,
                       MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
@@ -158,11 +161,14 @@ define([
 
                 $scope.$on('leafletDirectiveMarkersClick', function (e, id) {
                     var marker = $scope.markers[id];
+                    ImageDlgService.open(marker);
+                    /**
                     //$rootScope.$broadcast('selectMarkerOnMap', id);
                     $rootScope.$broadcast('scroll-to-place-' + id);
                     beforeFocusOnMarker(marker);
                     afterFocusOnMarker(marker);
                     focusOn(marker);
+                    */
                 });
 
                 $scope.search = function (text) {
@@ -366,11 +372,14 @@ define([
                         lat: item.geometry.location.lat,
                         lng: item.geometry.location.lng,
                         layer: 'images',
-                        message: item.address_components[0].long_name,
+                        message: 'item.address_components[0].long_name',
                         title: item.address_components[0].long_name,
                         life: 0,
                         favorites: false
                     };
+                    $timeout(function() {
+                        marker.message = null;
+                    }, 1000);
                     setupIconForMarker(marker);
                     return marker;
                 }
@@ -585,16 +594,23 @@ define([
 
                         var id = generateID();
 
-                        addMarker({
+                        var marker = addMarker({
                             id: id,
-                            _image: newImage.image,
-                            icon: buildImageIcon(id, newImage.image),
+                            _image: newImage,
+                            icon: buildImageIcon(id, newImage),
                             lat: newImage.lat,
                             lng: newImage.lng,
                             layer: 'images',
-                            message: newImage.name || '',
+                            //hack to unbindpopup
+                            message: 'hello world!',
                             title: newImage.name || '',
                             location: newImage.location
+                        });
+
+                        //I have pushed request to original repo of angular-leaflet-directive if it will be merged
+                        //i will remove this hack
+                        $timeout(function() {
+                            marker.message = null;
                         });
                     });
                 }
@@ -647,11 +663,12 @@ define([
                  * build icon
                  *
                  * @param id
-                 * @param url
+                 * @param image
                  * @returns {*}
                  */
-                function buildImageIcon(id, url) {
-                    var icon;
+                function buildImageIcon(id, image) {
+                    var icon,
+                        url = image.src;
                     if (!url || typeof url !== 'string') {
                         icon =  new L.Icon.Default();
                         /*return new L.icon({
@@ -664,7 +681,7 @@ define([
                             iconAnchor: [32, 32]
                         });
 
-                        icon._image = url;
+                        icon._image = image;
                     }
 
                     icon._markerId = id;
@@ -820,7 +837,7 @@ define([
                 }
 
                 function getImageOfMarkerData(markerData) {
-                    return markerData && markerData.icon && markerData.icon._image;
+                    return markerData && markerData.icon && markerData.icon._image && markerData.icon._image.src;
                 }
 
                 function iconCreateFunction(cluster) {
@@ -858,10 +875,10 @@ define([
                         .rest(OVERPOPULATION_LIMIT)
                         .forEach(addMarkerToOverpopulationList);
 
-                    if (marker && marker._image) {
+                    if (marker && marker._image && marker._image.src) {
                         return new L.divIcon({
                             html: '<div>' +
-                                    '<img src="' + marker._image + '" width="64" height="64"/>' +
+                                    '<img src="' + marker._image.src + '" width="64" height="64"/>' +
                                     (childCount>1?('<span class="photos-counter">' + childCount + '</span>'):'') +
                                   '</div>',
                             _markerId: marker.id,

@@ -58,7 +58,8 @@ module.exports = function (grunt) {
             target: {
                 options: {
                     // The default commit message for the gh-pages branch
-                    commitMessage: grunt.option('m') || 'update v' + grunt.file.readJSON('package.json').version
+                    commitMessage: grunt.option('m') ||
+                        'update v' + grunt.file.readJSON('package.json').version
                 },
                 // The folder where your gh-pages repo is
                 src: githubPagesFolder

@@ -23,7 +23,7 @@ define([
                 imagesByCache[cache] = image;
             };
 
-            api.addImage = function(lat, lng, name, image) {
+            api.addImage = function(lat, lng, name, image, metadata) {
                 var location = name || cacheGenerator(lat, lng);
 
                 imagesByLocation[location] = {
@@ -31,7 +31,8 @@ define([
                     lng: lng,
                     location: location,
                     name: name,
-                    image: image
+                    src: image,
+                    metadata: metadata
                 };
             };
 
