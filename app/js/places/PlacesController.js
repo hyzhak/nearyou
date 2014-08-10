@@ -49,13 +49,14 @@ define([
             '$q',
             '$rootScope',
             '$scope',
+            '$state',
             '$stateParams',
             '$timeout',
             function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch,
                       INSTAGRAM_CLIENT_ID, ImageDlgService, GoogleAnalytics,
                       GoogleGeoCoding, IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION, ImagesService, InstagramImages,
                       LocationStateService, Locations, $log, OVERPOPULATION_LIMIT, MAX_INSTAGRAM_RADIUS,
-                      MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
+                      MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $state, $stateParams, $timeout) {
 
                 var usedImages = [];
 
@@ -161,7 +162,7 @@ define([
 
                 $scope.$on('leafletDirectiveMarkersClick', function (e, id) {
                     var marker = $scope.markers[id];
-                    ImageDlgService.open(marker);
+                    $state.go('places.instagram', {imageId: marker._image.metadata.instagram});
                     /**
                     //$rootScope.$broadcast('selectMarkerOnMap', id);
                     $rootScope.$broadcast('scroll-to-place-' + id);

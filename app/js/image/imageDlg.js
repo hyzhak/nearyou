@@ -13,22 +13,22 @@ define([
             'NY.ImagesService'
         ])
         .service('ImageDlgService', ['$modal', function($modal) {
-            this.open = function(marker) {
+            this.open = function(imageId) {
                 return $modal.open({
                     template: template,
                     controller: 'ImageDlgCtrl',
                     resolve: {
-                        marker: function() {
-                            return marker
+                        imageId: function() {
+                            return imageId;
                         }
                     },
                     size: 'lg'
                 }).result;
             }
         }])
-        .controller('ImageDlgCtrl', ['InstagramImages', 'marker', '$modalInstance', '$scope', function(InstagramImages, marker, $modalInstance, $scope) {
+        .controller('ImageDlgCtrl', ['InstagramImages', 'imageId', '$modalInstance', '$scope', function(InstagramImages, imageId, $modalInstance, $scope) {
             $scope.imagePromise = InstagramImages
-                .getImage(marker._image.metadata.instagram)
+                .getImage(imageId)
                 .then(function(image) {
                     $scope.image = image;
                 });

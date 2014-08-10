@@ -45,9 +45,15 @@ define([
                         template: imagesListTemplate
                     }).
                     state('places', {
-                        url: '/places/?lat&lng&distance&zoom',
+                        url: 'places/?lat&lng&distance&zoom',
                         controller: 'PlacesCtrl',
                         template: placesTemplate
+                    })
+                    .state('places.instagram', {
+                        url: 'in/{imageId}',
+                        onEnter: ['ImageDlgService', '$stateParams', function(ImageDlgService, $stateParams) {
+                            ImageDlgService.open($stateParams.imageId);
+                        }]
                     });
         }]);
 });
