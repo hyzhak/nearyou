@@ -1,5 +1,6 @@
 define([
     'angular',
+    'leaflet',
     'lodash',
 
     'leaflet-markerclusterer',
@@ -9,7 +10,7 @@ define([
 
     'app/images/images',
     './deletedPlacesService'
-], function (angular, _) {
+], function (angular, L, _) {
     'use strict';
 
     angular.module('NY.PlacesCtrl', [
@@ -54,6 +55,8 @@ define([
                       MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $stateParams, $timeout) {
 
                 var usedImages = [];
+
+                L.Icon.Default.imagePath = 'images/leaflet';
 
                 LocationStateService.bounds = {};
 
@@ -352,7 +355,6 @@ define([
                 }
 
                 function addVenueFromGoogleGeoCoding(item) {
-                    return;
                     /*var id = item.address_components.map(function(component) {
                      return component.long_name;
                      }).join(',').replace(/\s/gi, '-');*/
@@ -419,8 +421,8 @@ define([
                     var earthRadius = 6371 * 1000; // Radius of the earth in m
                     var dLat = deg2rad(lat2 - lat1);  // deg2rad below
                     var dLon = deg2rad(lon2 - lon1);
-                    var a =
-                            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+
+                    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
                                 Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
                                     Math.sin(dLon / 2) * Math.sin(dLon / 2);
                     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -583,7 +585,7 @@ define([
 
                         var id = generateID();
 
-                        var marker = addMarker({
+                        addMarker({
                             id: id,
                             _image: newImage.image,
                             icon: buildImageIcon(id, newImage.image),
@@ -821,10 +823,6 @@ define([
                     return markerData && markerData.icon && markerData.icon._image;
                 }
 
-                function getImageOfMarker(marker) {
-                    return marker && marker.options && marker.options.icon && marker.options.icon.options && marker.options.icon.options._image;
-                }
-
                 function iconCreateFunction(cluster) {
                     var children = cluster.getAllChildMarkers(),
                         marker = _(children)
@@ -849,7 +847,7 @@ define([
                         c += 'large';
                     }
 
-                    var r = _(children)
+                    _(children)
                         .shuffle()
                         .map(function(icon) {
                             return $scope.markers[icon.options.icon.options._markerId];
@@ -861,10 +859,11 @@ define([
                         .forEach(addMarkerToOverpopulationList);
 
                     if (marker && marker._image) {
-                        var imageSrc = '<img src="' + marker._image + '" width="64" height="64"/>';
-
                         return new L.divIcon({
-                            html: '<div>' + imageSrc + (childCount > 1 ? ('<span class="photos-counter">' + childCount + '</span>') : '') + '</div>',
+                            html: '<div>' +
+                                    '<img src="' + marker._image + '" width="64" height="64"/>' +
+                                    (childCount>1?('<span class="photos-counter">' + childCount + '</span>'):'') +
+                                  '</div>',
                             _markerId: marker.id,
                             _image: marker._image,
                             className: 'photo-marker-cluster' + c,

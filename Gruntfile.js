@@ -11,6 +11,7 @@ module.exports = function (grunt) {
                 options: {
                     baseUrl: "app",
                     mainConfigFile: "app/js/config.js",
+                    optimize: 'uglify2',
                     out: "build/js/<%= pkg.shortName %>.js"
                 }
             }
@@ -41,6 +42,16 @@ module.exports = function (grunt) {
                         dest: githubPagesFolder
                     }
                 ]
+            },
+            leafletImages: {
+                files: [
+                    {
+                        expand: true, flatten: false,
+                        cwd: 'app/lib/leaflet/dist/images',
+                        src: ['**'],
+                        dest: githubPagesFolder + '/images/leaflet'
+                    }
+                ]
             }
         },
         githubPages: {
@@ -62,6 +73,6 @@ module.exports = function (grunt) {
 
     // Default task(s).
     grunt.registerTask('default', ['build']);
-    grunt.registerTask('build', ['requirejs', 'preprocess', 'copy:main']);
+    grunt.registerTask('build', ['requirejs', 'preprocess', 'copy:main', 'copy:leafletImages']);
     grunt.registerTask('deploy', ['build', 'copy:gh', 'githubPages']);
 };

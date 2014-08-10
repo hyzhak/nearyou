@@ -12,7 +12,7 @@ requirejs({
         'angular-bootstrap': 'lib/angular-bootstrap/ui-bootstrap-tpls',
         'angular-resource': 'lib/angular-resource/angular-resource',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
-        'leaflet': 'lib/leaflet/dist/leaflet',
+        'leaflet': 'lib/leaflet/dist/leaflet-src',
         'leaflet-directive': 'lib/angular-leaflet/dist/angular-leaflet-directive.min',
         'leaflet-markerclusterer': 'lib/leaflet.markerclusterer/dist/leaflet.markercluster-src',
         'lodash': 'lib/lodash/dist/lodash'
@@ -48,5 +48,7 @@ requirejs({
         }
     },
     name: 'lib/almond/almond',
-    include: ['js/main']
+    include: ['js/main'],
+    generateSourceMaps: true,
+    preserveLicenseComments: false
 });
