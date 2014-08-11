@@ -47,10 +47,17 @@
         <li class="title">
           Photos
         </li>
-        <li ng-class="{ active: $state.includes('at-with-location')}">
+        <li ng-class="{ active: $state.includes('at-with-location')}"
+            ng-if="!$state.includes('places')">
           <a ui-sref="at">
             <i class="fa fa-film"></i>
             Near you
+          </a>
+        </li>
+        <li ng-if="$state.includes('places')">
+          <a ui-sref="at-with-location({lat: location.lat, lng: location.lng, distance: location.distance, zoom: location.zoom})">
+            <i class="fa fa-film"></i>
+            Photos
           </a>
         </li>
         <li class="active"
@@ -61,31 +68,20 @@
           </a>
         </li>
         <li ng-class="{ active: $state.includes('places')}">
-          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, place: location.place})">
+          <a ui-sref="places({lat: location.lat, lng: location.lng, distance: location.distance, zoom: location.zoom, place: location.place})">
             <i class="fa fa-globe"></i>
-            Search
+            Map
           </a>
         </li>
         <li ng-class="{ active: $state.includes('about')}">
-          <a href ng-click="openAbout()">About...</a>
+          <a href ng-click="openAbout()">
+            <i class="fa fa-question"></i>
+            About...
+          </a>
         </li>
       </ul>
     </footer>
 
-    <!--<div id="aboutWindow" class="modal hide fade">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h3>Photos near U.</h3>
-        </div>
-        <div class="modal-body">
-            <p>It's just application of mashup of hip from instagram and high tech from <a target="_blank" href="http://angularjs.org">angular.js.</a></p>
-            <p>Show unlimited series of <a ng-click="hideAbout()" href="#/bestof"><span class="badge">best of</span></a> and images <a ng-click="hideAbout()" href="#/local"><span class="badge">near you</span></a>.</p>
-        </div>
-        <div class="modal-footer">
-            <a ng-click="hideAbout()" class="btn">Close</a>
-            <a target="_blank" href="http://hyzhak.github.com/" class="btn btn-primary">Main Page</a>
-        </div>
-    </div>-->
 
     <script src="js/nearyou.js"></script>
 </body>
