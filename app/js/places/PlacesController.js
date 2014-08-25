@@ -104,8 +104,11 @@ define([
                                 type: 'markercluster',
                                 visible: true,
                                 layerOptions: {
+                                    iconCreateFunction: iconCreateFunction,
                                     singleMarkerMode: true,
-                                    iconCreateFunction: iconCreateFunction
+                                    showCoverageOnHover: false,
+                                    removeOutsideVisibleBounds: true,
+                                    zoomToBoundsOnClick: true //set to false and show 
                                 }
                             }
                         }
