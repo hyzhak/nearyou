@@ -23,7 +23,8 @@ define([
 
                 var lat = $stateParams.lat,
                     lng = $stateParams.lng,
-                    distance = $stateParams.distance;
+                    distance = $stateParams.distance,
+                    zoom = $stateParams.zoom;
 
                 GoogleAnalytics.trackPage('{ location: [' + lat + ', ' + lng + '], distance: ' + distance + '}');
                 if ($stateParams.place) {
@@ -33,6 +34,7 @@ define([
                 LocationStateService.lat = Number(lat);
                 LocationStateService.lng = Number(lng);
                 LocationStateService.distance = Number(distance) || LocationStateService.distance;
+                LocationStateService.zoom = Number(zoom) || LocationStateService.zoom;
                 LocationStateService.place = decodeURIComponent($stateParams.place).substr(0, 80);
 
                 $scope.lat = lat;

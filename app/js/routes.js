@@ -26,16 +26,16 @@ define([
                      $urlRouterProvider) {
                 $locationProvider.html5Mode(false).hashPrefix('!');
 
-                $urlRouterProvider.otherwise('at');
+                $urlRouterProvider.otherwise('local');
 
                 $stateProvider
                     .state('at', {
-                        url: '/at',
+                        url: '/local',
                         controller: 'RequestUserLocationCtrl',
                         template: imagesListTemplate
                     })
                     .state('at-with-location', {
-                        url: '/at?lat&lng&distance',
+                        url: '/at?lat&lng&distance&zoom',
                         controller: 'LocalImagesCtrl',
                         template: imagesListTemplate
                     }).
@@ -50,10 +50,24 @@ define([
                         template: placesTemplate
                     })
                     .state('places.instagram', {
+                        parent: 'places',
                         url: '/in/{imageId}',
-                        onEnter: ['ImageDlgService', '$stateParams', function(ImageDlgService, $stateParams) {
-                            ImageDlgService.open($stateParams.imageId);
+                        onEnter: ['ImageDlgService', '$state', '$stateParams', function(ImageDlgService, $state, $stateParams) {
+                            ImageDlgService.open($stateParams.imageId)
+                                .finally(function() {
+                                    $state.go('^', null, {
+                                        notify: false
+                                    });
+                                });
                         }]
                     });
+        }])
+        .run(['$rootScope', function($rootScope){
+                $rootScope.$on('$stateChangeStart',
+                    function(event, toState, toParams, fromState, fromParams){
+                        if (fromState === toState === 'places') {
+                            event.preventDefault();
+                        }
+                    })
         }]);
 });

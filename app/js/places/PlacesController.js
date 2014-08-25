@@ -42,6 +42,7 @@ define([
             'InstagramImages',
             'LocationStateService',
             'Locations',
+            '$location',
             '$log',
             'OVERPOPULATION_LIMIT',
             'MAX_INSTAGRAM_RADIUS',
@@ -55,7 +56,7 @@ define([
             function (DeletedPlacesService, FOUR_SQUARE_CLIENT, FourSquareVenues, FourSquareSearch,
                       INSTAGRAM_CLIENT_ID, ImageDlgService, GoogleAnalytics,
                       GoogleGeoCoding, IF_NUM_OF_VISIBLE_MARKERS_THEN_TRIGGER_OVERPOPULATION, ImagesService, InstagramImages,
-                      LocationStateService, Locations, $log, OVERPOPULATION_LIMIT, MAX_INSTAGRAM_RADIUS,
+                      LocationStateService, Locations, $location, $log, OVERPOPULATION_LIMIT, MAX_INSTAGRAM_RADIUS,
                       MAX_NUM_OF_VISIBLE_MARKERS, $q, $rootScope, $scope, $state, $stateParams, $timeout) {
 
                 var usedImages = [];
@@ -151,8 +152,26 @@ define([
                 }
 
                 function mapChangeHandler(event, e) {
-                    var bounds = e.leafletEvent.target.getBounds();
-                    updateBounds(bounds.getSouthWest(), bounds.getNorthEast());
+                    var leaflet = e.leafletEvent.target,
+                        bounds = leaflet.getBounds(),
+                        sw = bounds.getSouthWest(),
+                        ne = bounds.getNorthEast(),
+                        center = leaflet.getCenter();
+
+                    LocationStateService.lat = center.lat;
+                    LocationStateService.lng = center.lng;
+                    LocationStateService.distance = getGreatCircleDistance(sw.lat, sw.lng, ne.lat, ne.lng) / 2;
+                    LocationStateService.zoom = $scope.center.zoom;
+
+                    $state.go('places', LocationStateService, {
+                        inherit: true,
+                        location: 'replace',
+                        notify: false,
+                        reload: false
+                    });
+
+                    updateBounds(sw, ne);
+
                     trackCenterToGoogleAnalytics();
                 }
 
@@ -162,7 +181,11 @@ define([
 
                 $scope.$on('leafletDirectiveMarkersClick', function (e, id) {
                     var marker = $scope.markers[id];
-                    $state.go('places.instagram', {imageId: marker._image.metadata.instagram});
+                    $state.go('places.instagram', {
+                        imageId: marker._image.metadata.instagram
+                    }, {
+                        notify: false
+                    });
                     /**
                     //$rootScope.$broadcast('selectMarkerOnMap', id);
                     $rootScope.$broadcast('scroll-to-place-' + id);
