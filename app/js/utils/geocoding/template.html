@@ -1,0 +1,18 @@
+<div>
+  <div class="formRow">
+    <label>Address:</label>
+    <div class="formRight">
+      <input type="text"
+             class="form-control"
+             placeholder="Address"
+             ng-model="innerAddress"
+             required>
+             <!--ng-change="userChangeAddress()"-->
+
+    </div>
+  </div>
+
+  <div class="formRow">
+    <div id="map_canvas" ng-style="googleMapStyle"></div>
+  </div>
+</div>

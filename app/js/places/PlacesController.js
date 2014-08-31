@@ -3,18 +3,24 @@ define([
     'leaflet',
     'lodash',
 
+    'angular-ui-select',
     'leaflet-markerclusterer',
+
+    'css!lib/angular-ui-select/dist/select.css',
     'css!lib/leaflet-dist/leaflet.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.css',
     'css!lib/leaflet.markerclusterer/dist/MarkerCluster.Default.css',
 
     'app/images/images',
     'app/image/imageDlg',
+    'app/utils/geocoding/index',
     './deletedPlacesService'
 ], function (angular, L, _) {
     'use strict';
 
     angular.module('NY.PlacesCtrl', [
+            'ui.select',
+            'geocoding',
             'Instagram',
             'NY.DeletedPlacesService',
             'NY.ImageDlg',
@@ -917,5 +923,20 @@ define([
                         return new L.Icon.Default();
                     }
                 }
+
+                $scope.$watch('selectedGeocode', function(newValue) {
+                    if (!newValue) {
+                        return;
+                    }
+
+                    var bounds = newValue.geometry.bounds;
+
+                    $scope.bounds.northEast = bounds.northeast;
+                    $scope.bounds.southWest = bounds.southwest;
+
+                    //updateBounds(bounds.southwest, bounds.northeast);
+
+//                    $scope.search(newValue.formatted_address);
+                });
             }]);
 });

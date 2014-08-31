@@ -35,7 +35,9 @@
     "require-css": "*",
     "requirejs": "*",
     "requirejs-text": "*",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "angular-ui-select": "~0.6.0",
+    "angular-sanitize": "~1.2.23"
   },
   "devDependencies": {
     "angular-mocks": "*",

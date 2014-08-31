@@ -1,34 +1,29 @@
-<div class="stick-to-top">
-  <leaflet id="map"
-           bounds="bounds"
-           center="center"
-           custom-controls="myCustomControls"
-           defaults="defaults"
-           events="events"
-           layers="layers"
-           markers="markers"
-           paths="paths">
-  </leaflet>
-</div>
+<form id="find-place" class="form-inline" role="form">
+  <div class="input-group">
+    <div geocode-lookup selected="selectedGeocode"></div>
+    <span class="input-group-btn">
+      <button type="submit"
+              class="btn btn-primary"
+              ng-click="search(searchText)">Go!
+      </button>
+    </span>
+  </div>
+</form>
+
+<!--<div class="stick-to-top">-->
+<leaflet id="map"
+         bounds="bounds"
+         center="center"
+         custom-controls="myCustomControls"
+         defaults="defaults"
+         events="events"
+         layers="layers"
+         markers="markers"
+         paths="paths">
+</leaflet>
+<!--</div>-->
 <!--<div class="under-map"></div>-->
 <div id="places-list">
-  <form id="find-place" class="form-inline" role="form">
-    <div class="input-group">
-      <input type="text"
-             class="form-control"
-             placeholder="find place"
-             ng-model="searchText">
-      <span class="input-group-btn">
-        <button type="submit"
-                class="btn btn-primary"
-                ng-click="search(searchText)"
-            >Go!</button>
-      <label>
-        <input type="checkbox" ng-model="autoUpdate"> Auto Update
-      </label>
-      </span>
-    </div>
-  </form>
   <!--<ul>
     <li ng-repeat="place in markers track by place.id"
         class="list-unstyled animate-repeat"
