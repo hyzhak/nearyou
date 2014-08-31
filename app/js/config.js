@@ -11,7 +11,9 @@ requirejs({
         'angular-animate': 'lib/angular-animate/angular-animate',
         'angular-bootstrap': 'lib/angular-bootstrap/ui-bootstrap-tpls',
         'angular-resource': 'lib/angular-resource/angular-resource',
+        'angular-sanitize': 'lib/angular-sanitize/angular-sanitize',
         'angular-ui-router': 'lib/angular-ui-router/release/angular-ui-router',
+        'angular-ui-select': 'lib/angular-ui-select/dist/select',
         'leaflet': 'lib/leaflet/dist/leaflet-src',
         'leaflet-directive': 'lib/angular-leaflet/dist/angular-leaflet-directive.min',
         'leaflet-markerclusterer': 'lib/leaflet.markerclusterer/dist/leaflet.markercluster-src',
@@ -34,7 +36,13 @@ requirejs({
         'angular-resource': {
             deps: ['angular']
         },
+        'angular-sanitize': {
+            deps: ['angular']
+        },
         'angular-ui-router': {
+            deps: ['angular']
+        },
+        'angular-ui-select': {
             deps: ['angular']
         },
         'leaflet': {
